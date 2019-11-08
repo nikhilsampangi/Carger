@@ -1,0 +1,36 @@
+.fp {
+  background: #ECE9E6;
+  background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);
+  background: linear-gradient(to right, #FFFFFF, #ECE9E6);
+  background-image: url("../assets/fp_bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.mlogo {
+  padding-top: 35%;
+}
+
+#fp_logo {
+  width: 30vw;
+  padding-top: 4vh;
+  padding-left: 3vw;
+}
+
+.fpbtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.fpbtnico {
+  width: 20vw;
+}
+
+#car {
+  height: 20vh;
+  position: absolute;
+  top: 162%;
+  right: 50%
+}

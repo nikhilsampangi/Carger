@@ -1,0 +1,44 @@
+#AOo:hover {
+  color: #da542e;
+}
+
+#ASd:hover {
+  color: #27a9e3;
+}
+
+#ARs:hover {
+  color: #28b779;
+}
+
+#AUo:hover {
+  color: #ffb848;
+}
+
+#ACf:hover {
+  color: #2255a4;
+}
+
+#AOoActive {
+  background-color: #da542e;
+  color: white;
+}
+
+#ASdActive {
+  background-color: #27a9e3;
+  color: white;
+}
+
+#ARsActive {
+  background-color: #28b779;
+  color: white;
+}
+
+#AUoActive {
+  background-color: #ffb848;
+  color: white;
+}
+
+#ACfActive {
+  background-color: #2255a4;
+  color: white;
+}

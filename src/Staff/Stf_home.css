@@ -1,0 +1,112 @@
+.boo {
+  background-color: #eeeeee;
+}
+
+#stfhmlogo {
+  width: 16vw;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  padding-left: 1.3vw;
+}
+
+/* SideBar */
+.SideBar {
+  height: 100%;
+  width: 18vw;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #343a40;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.SideBar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.SideBar a:hover {
+  color: #f1f1f1;
+}
+
+@media screen and (max-height: 450px) {
+  .SideBar {
+    padding-top: 15px;
+  }
+
+  .SideBar a {
+    font-size: 18px;
+  }
+}
+
+.SBItem {
+  font-size: 18px;
+  padding: 4%;
+  cursor: pointer;
+  color: white;
+}
+
+/* .yoo::after {
+  content: "\f054";
+} */
+
+#Db:hover {
+  color: #da542e;
+}
+
+#Ps:hover {
+  color: #ffb848;
+}
+
+#Rs:hover {
+  color: #28b779;
+}
+
+#Cf:hover {
+  color: #27a9e3;
+}
+
+#DbActive {
+  background-color: #da542e;
+  color: white;
+}
+
+#PsActive {
+  background-color: #ffb848;
+  color: white;
+}
+
+#RsActive {
+  background-color: #28b779;
+  color: white;
+}
+
+#CfActive {
+  background-color: #27a9e3;
+  color: white;
+}
+
+/* .MainContent {
+  margin-top: navbar.width;
+} */
+
+.pumptitle {
+  font-family: 'Ubuntu Condensed', sans-serif;
+  font-size: 1.7em;
+}
+
+.pumpstats {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.3em;
+}
+
+.ststats {
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 20%;
+  margin-right: 4%;
+}
