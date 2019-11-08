@@ -91,11 +91,67 @@ export default class Adm_home extends Component {
           </div>
           <br /><br /><br /><br /><br />
           <div className="MainContent" style={{ "marginLeft": "19vw" }}>
-            Yoo
+            {this.state.Tab == 1 ? <OutletOverview /> : null}
+            {this.state.Tab == 2 ? <ScheduleDelivery /> : null}
+            {this.state.Tab == 3 ? <RevenueStatistics /> : null}
+            {this.state.Tab == 4 ? <UpdateOutletList /> : null}
+            {this.state.Tab == 5 ? <CustomerFeedback /> : null}
           </div>
         </div>
 
       </div>
     )
   }
+}
+
+class OutletOverview extends Component {
+  render() {
+    return (
+      <div>
+        oo
+      </div>
+    )
+  }
+}
+class ScheduleDelivery extends Component {
+  render() {
+    return (
+      <div>
+        oo
+      </div>
+    )
+  }
+
+
+}
+class RevenueStatistics extends Component {
+  render() {
+    return (
+      <div>
+        oo
+      </div>
+    )
+  }
+
+
+}
+class UpdateOutletList extends Component {
+  render() {
+    return (
+      <div>
+        oo
+      </div>
+    )
+  }
+
+}
+class CustomerFeedback extends Component {
+  render() {
+    return (
+      <div>
+        oo
+      </div>
+    )
+  }
+
 }
