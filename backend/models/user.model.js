@@ -4,16 +4,10 @@ const Schema = mongoose.Schema;
 const schema = new Schema({
     username: {type:String, required:true},
     hashedPassword: {type:String, required:true},
-    phone: {
-        type:Number,
-        require: true,
-        // validate: {
-        //     validator: function(v) {
-        //         return /d{10}/.test(v)
-        //     }
-        // }
-    },
-    email: {type:String, required: true},
+    phone: { type:Number, required: true, min:1000000000, max: 9999999999},
+    email: {type:String, required: true, match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']},
+    isVerified: {type:Boolean, default: false},
+    token: {type:String, default: null},
     gender: {type:String, enum: ['Male', 'Female', 'Prefer not to say'], default:'Prefer not to say'},
     eId: {type:String},
     balance: {type:String},

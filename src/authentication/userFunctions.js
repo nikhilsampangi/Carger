@@ -1,11 +1,14 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export const register = newUser => {
     return axios.post('user/register', {
         username: newUser.username,
         hashedPassword: newUser.hashedPassword,
         email: newUser.email,
-        phone: newUser.phone
+        phone: newUser.phone,
+        gender: newUser.gender,
+        confirmPassword: newUser.confirmPassword 
     })
         .then(res => {
             if (res.data.error) {
@@ -39,7 +42,7 @@ export const login = user => {
                 return check
             }
             else {
-                sessionStorage.setItem('usertoken', res.data)
+                Cookies.set('usertoken', res.data)
                 const check = {
                     status: true,
                     data: res.data
