@@ -2,35 +2,46 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    username: {type:String, required:true,
-    
-        validate: {
-            validator: function(v) {
-                return (v.length() == 0)
-            },
-            message: 'Username is required'
-        }
+    username: {type:String, required:[true, 'Username cannot be empty']},
 
-    },
-    hashedPassword: {type:String, required:true},
-    phone: { type:Number, required: true,
+    hashedPassword: {type:String, required:[true, 'Password cannot be empty']},
+
+    phone: { type:Number, required: [true, 'Phone number cannot be empty'],
 
         validate: {
             validator: function(v) {
-                var re = /^$|^\d{10}$/;
-                return (v == null || re.test(v))
+                var re = /^\d{10}$/;
+                return re.test(v)
             },
-            message: 'Must be 10 digit number'
+            message: 'Phone number must be 10 digit number'
         }
     
     },
-    email: {type:String, required: true, match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']},
+
+    email: {type:String, required: [true, 'email cannot be empty'],
+
+        validate: {
+            validator: function(v) {
+                var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                return re.test(v)
+            },
+            message: 'Please fill a valid email address'
+        }
+
+    },
+
     isVerified: {type:Boolean, default: false},
+    
     token: {type:String, default: null},
+    
     gender: {type:String, enum: ['Male', 'Female', 'Prefer not to say'], default:'Prefer not to say'},
+    
     eId: {type:String},
+    
     balance: {type:String},
+    
     eWalletPin: {type:String},
+    
     gasTransactions: [{
         transactionId: {type:String, required:true},
         fuelType: {type:String, required:true},
@@ -44,6 +55,7 @@ const schema = new Schema({
         updatedAt: {type:Date, default: Date.now, required:true},
         eWalletTransactionId: {type:String, required : true}
     }],
+
     eWalletTransactions: [{
         transactionId: {type:String, required:true},
         status: {type:String, enum:['initiated', 'processing', 'completed', 'failed'], required:true},
@@ -52,6 +64,7 @@ const schema = new Schema({
         updatedAt: {type:Date, default: Date.now, required:true}, 
         amount: {type:Number, required:true}
     }]
+    
 });
 
 schema.set('toJSON', {virtuals:true});

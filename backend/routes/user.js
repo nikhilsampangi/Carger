@@ -45,28 +45,29 @@ function register(req, res) {
                       User.updateOne({
                         _id: user._id
                       }, newValues)
-                          .then(user => {
-                            if(user){
-                              console.log("updated token")
-                            }
-                            else{
-                              console.log({error:"user not found"})
-                            }
-                          })
-                          .catch(err => {
-                            console.log('error:' + err.message)
-                          });
+                        .then(user => {
+                          if(user){
+                            console.log("updated token")
+                          }
+                          else{
+                            console.log({error:"token not updated"})
+                          }
+                        })
+                        .catch(err => {
+                          console.log('error:' + err.message)
+                        });
 
-                    res.json({status: "registered and link is sent to your to get your email verified"});
+                    res.json({status: "registered and a link is sent to your to get your email verified"});
                   })
 
                   .catch(err => {
-                      // for(i in err){
-                      //   for(j in err[i]){
-                      //     console.log(err[i][j].message);
-                      //   }
-                      // }
-                      res.json({error: err});
+                    var arr= Object.keys(err['errors'])
+                    var errors= []
+                    for(i in arr){
+                      errors.push(err['errors'][arr[i]].message);
+                    }
+                    console.log(errors)
+                    res.json({error: errors});
                   })
               })
           }
@@ -75,10 +76,13 @@ function register(req, res) {
           }
       })
       .catch(err =>{
-        // for(i in err){
-        //   console.log(err[i])
-        // }
-          res.json({error: err});
+        var arr= Object.keys(err['errors'])
+        var errors= []
+        for(i in arr){
+          errors.push(err['errors'][arr[i]].message);
+        }
+        console.log(errors)
+        res.json({error: errors});
       })
 
 }
