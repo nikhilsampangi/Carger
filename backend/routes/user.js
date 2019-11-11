@@ -4,10 +4,11 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
 const auth= require('./middleware_jwt');
+const randomToken = require('random-token');
 
 const User= require('../models/user.model');
 
-const send_email= require('./send_email')
+const email = require('./send_email')
 
 router.use(cors());
 
@@ -16,7 +17,6 @@ process.SECRET_KEY = 'secret';
 router.post('/register', register)
 
 function register(req, res) {
-  if(req.body.hashedPassword === req.body.confirmPassword ){
 
       const userData = {
           username: req.body.username,
@@ -35,9 +35,37 @@ function register(req, res) {
                   userData.hashedPassword = hash
                   User.create(userData)
                   .then(user => {
-                      res.json({status: user.email + " registered"});
+      
+                    const gen_token= randomToken(55);
+
+                    email.send_verification_token(gen_token, user.email);
+
+                    var newValues = { $set: {token: gen_token } };
+              
+                      User.updateOne({
+                        _id: user._id
+                      }, newValues)
+                          .then(user => {
+                            if(user){
+                              console.log("updated token")
+                            }
+                            else{
+                              console.log({error:"user not found"})
+                            }
+                          })
+                          .catch(err => {
+                            console.log('error:' + err.message)
+                          });
+
+                    res.json({status: "registered and link is sent to your to get your email verified"});
                   })
+
                   .catch(err => {
+                      // for(i in err){
+                      //   for(j in err[i]){
+                      //     console.log(err[i][j].message);
+                      //   }
+                      // }
                       res.json({error: err});
                   })
               })
@@ -47,15 +75,14 @@ function register(req, res) {
           }
       })
       .catch(err =>{
+        // for(i in err){
+        //   console.log(err[i])
+        // }
           res.json({error: err});
       })
-  }
-  
-  else{
-    res.json({error: "Passwords did not match"})
-  }  
 
 }
+
 
 router.post('/login', login)
 
@@ -70,11 +97,10 @@ function login(req, res){
             // Passwords match
             const payload = {
               _id: user._id,
-              username: user.username,
-              phone: user.phone,
               email: user.email
             }
             let token = jwt.sign(payload, process.SECRET_KEY, {
+              algorithm: 'HS256',
               expiresIn: 1440
             })
             res.send(token)
@@ -88,8 +114,9 @@ function login(req, res){
       })
       .catch(err => {
         res.send('error: ' + err)
-      })
-  }
+      });
+
+}
 
 
 router.get('/profile', auth , profile)
@@ -109,7 +136,8 @@ function profile(req, res){
     })
     .catch(err => {
       res.json('error:' + err)
-    })
+    });
+
 }
 
 router.delete('/delete', delete_user)
@@ -130,65 +158,55 @@ function delete_user(req, res){
     })
     .catch(err => {
       res.json('error:' + err)
-    })
+    });
+
 }
 
-router.post('/get_verified',  auth, send_verification_token)
+router.post('/get_verified',  auth, resend_token)
 
-function send_verification_token(req, res){
-    
-    bcrypt.hash(req.user._id, 10, (err, hash) => {
+function resend_token(req, res){
 
-      link="http://"+req.get('host')+`/user/confirm/${hash}`;
-      const body= "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-      send_email(req.user.email, body)
+  User.findOne({
+    _id: req.user._id
+  })
+  .then(user=>{
+    if(user){
+      email.send_verification_token(user.token, user.email)
+      res.json({status: "resent verification token"})
+    }
+    else{
+      res.json({error: "Not a valid user"})
+    }
+  })
+  .catch(err=>{
+    res.json({error: err})
+  });
 
-      
-      var newValues = { $set: {token: hash} };
-
-      User.updateOne({
-        _id: req.user._id
-      }, newValues)
-        .then(user => {
-          if(user){
-            console.log("updated token")
-            res.send("email sent please visit your email and get verified!!!")
-          }
-          else{
-            res.json({error:"not verified"})
-          }
-        })
-        .catch(err => {
-          res.json('error:' + err)
-        })
-    })
 }
 
 
-router.get('/confirm/:hash', confirm_email)
+router.get('/verify/:token', confirm_email)
 
 function confirm_email(req, res){
 
-  let hashedToken= req.params.hash;
-
+  let randToken= req.params.token;
   var newValues = { $set: {isVerified: true } };
-  console.log(hashedToken)
 
-  User.updateOne({
-    token: hashedToken
-  }, newValues)
+  User.findOneAndUpdate({
+    token: randToken
+  }, newValues)  
     .then(user => {
       if(user){
-        console.log("verified"+ user)
         res.send("verified")
       }
-      else{
+      else{ 
         res.json({error:"not verified"})
       }
     })
     .catch(err => {
       res.json('error:' + err)
-    })
+    });
+
 }
 
 

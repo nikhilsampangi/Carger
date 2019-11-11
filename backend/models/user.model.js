@@ -2,9 +2,28 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    username: {type:String, required:true},
+    username: {type:String, required:true,
+    
+        validate: {
+            validator: function(v) {
+                return (v.length() == 0)
+            },
+            message: 'Username is required'
+        }
+
+    },
     hashedPassword: {type:String, required:true},
-    phone: { type:Number, required: true, min:1000000000, max: 9999999999},
+    phone: { type:Number, required: true,
+
+        validate: {
+            validator: function(v) {
+                var re = /^$|^\d{10}$/;
+                return (v == null || re.test(v))
+            },
+            message: 'Must be 10 digit number'
+        }
+    
+    },
     email: {type:String, required: true, match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']},
     isVerified: {type:Boolean, default: false},
     token: {type:String, default: null},
