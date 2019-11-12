@@ -132,7 +132,7 @@ class Login extends Component {
 class Register extends Component {
   constructor() {
     super();
-    this.state = { username: '', hashedPassword: '', phone: '', email: '' };
+    this.state = { username: '', hashedPassword: '', confirmPassword:'', phone: '', email: '', gender: 'Prefer not to say'};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -147,7 +147,9 @@ class Register extends Component {
       username: this.state.username,
       hashedPassword: this.state.hashedPassword,
       email: this.state.email,
-      phone: this.state.phone
+      phone: this.state.phone,
+      gender: this.state.gender,
+      confirmPassword: this.state.confirmPassword
     }
 
     register(newUser)
@@ -183,7 +185,7 @@ class Register extends Component {
           </div>
           <div class="input-block">
             <label for="signup-password-confirm">Confirm password</label>
-            <input id="signup-password-confirm" type="password" required />
+            <input id="signup-password-confirm" type="password" name="confirmPassword" value={this.state.confirmPassword} onChange={this.handleChange} required />
           </div>
         </fieldset>
         <div className="col-2" />
@@ -195,6 +197,14 @@ class Register extends Component {
           <div class="input-block">
             <label for="signup-phone-num">Phone</label>
             <input id="signup-phone-num" type="text" name="phone" value={this.state.phone} onChange={this.handleChange} />
+          </div>
+          <div class="input-block">
+            <label for="signup-gender">Gender</label>
+            <select id="signup-gender" name="gender" value={this.state.gender} onChange={this.handleChange}>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+            </select>
           </div>
         </fieldset>
         <button type="submit" className="btn btn-outline-primary btn-signup">Continue</button>
