@@ -98,8 +98,8 @@ export default class Stf_home extends Component {
           <div className="MainContent" style={{ "marginLeft": "19vw" }}>
             {this.state.Tab == 1 ? <Dashboard /> : null}
             {this.state.Tab == 2 ? <RevenueStatistics /> : null}
-            {/* backend - array of no of outlets [diesel, petrol, cng] should be passed in here - */}
-            {this.state.Tab == 3 ? <PumpStatistics outletcount={[3, 4, 3]} /> : null}
+            {/* backend - array of no of pumps [diesel, petrol, cng] should be passed in here - */}
+            {this.state.Tab == 3 ? <PumpStatistics pumpcount={[3, 4, 3]} /> : null}
             {this.state.Tab == 4 ? <CustomerFeedback /> : null}
           </div>
         </div>
@@ -139,17 +139,17 @@ class PumpStatistics extends Component {
     var pumps = [[], [], []]
     // backend index of pumps
     var count = 0
-    for (var i = 0; i < this.props.outletcount[0]; i++) {
+    for (var i = 0; i < this.props.pumpcount[0]; i++) {
       // Backend : Pass parameters unique for each pump ( fuel quantity) and fuel type 0here
       pumps[0].push(<Pump index={count} fueltype={0} />);
       count = count + 1;
     }
-    for (var i = 0; i < this.props.outletcount[1]; i++) {
+    for (var i = 0; i < this.props.pumpcount[1]; i++) {
       // Backend : Pass parameters unique for each pump ( fuel quantity) and fuel type 0here
       pumps[1].push(<Pump index={count} fueltype={1} />);
       count = count + 1;
     }
-    for (var i = 0; i < this.props.outletcount[2]; i++) {
+    for (var i = 0; i < this.props.pumpcount[2]; i++) {
       // Backend : Pass parameters unique for each pump ( fuel quantity) and fuel type 0here
       pumps[2].push(<Pump index={count} fueltype={3} />);
       count = count + 1;

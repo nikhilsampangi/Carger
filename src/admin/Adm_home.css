@@ -1,3 +1,7 @@
+.adminpages {
+  background-color: #eeeeee;
+}
+
 #AOo:hover {
   color: #da542e;
 }
@@ -41,4 +45,14 @@
 #ACfActive {
   background-color: #2255a4;
   color: white;
+}
+
+.OutletName {
+  font-family: 'Josefin Sans', sans-serif;
+  margin-bottom: -60px !important;
+  color: #fc6037;
+}
+
+.addoutletformtitle {
+  font-family: 'Josefin Sans', sans-serif;
 }
