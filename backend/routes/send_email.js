@@ -8,7 +8,7 @@ var transporter = nodemailer.createTransport({
     }
   });
 
-function send_mail(to_email, body){
+function send_mail(body, to_email){
     
     mailOptions={
         from: 'bharathjohn57@gmail.com',
@@ -16,7 +16,6 @@ function send_mail(to_email, body){
         subject : "Please confirm your Email account",
         html : body 
     }
-    console.log(mailOptions);
 
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
@@ -25,6 +24,15 @@ function send_mail(to_email, body){
         console.log('Email sent: ' + info.response);
         } 
     });
-} 
 
-module.exports= send_mail
+}
+
+function send_verification_token(token, to_email){
+
+    link="http://localhost:8008"+`/user/verify/${token}`;
+    const body= "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+    send_mail(body, to_email)
+
+}
+
+module.exports= {send_mail, send_verification_token}

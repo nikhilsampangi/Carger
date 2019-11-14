@@ -15,6 +15,8 @@ paypal.configure({
   });
 
 mongoose.connect('mongodb://localhost:27017/cargerdb', {useNewUrlParser: true});
+mongoose.set('useFindAndModify', false);
+
 const connection = mongoose.connection;
 
 connection.once('open', function(){
