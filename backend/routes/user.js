@@ -57,7 +57,7 @@ function register(req, res) {
                           console.log('error:' + err.message)
                         });
 
-                    res.json({status: "registered and a link is sent to your to get your email verified"});
+                    res.json({status: "registered and a link is sent to your email to get your email verified"});
                   })
 
                   .catch(err => {
@@ -166,7 +166,7 @@ function delete_user(req, res){
 
 }
 
-router.post('/get_verified',  auth, resend_token)
+router.post('/get_verified', auth, resend_token)
 
 function resend_token(req, res){
 
@@ -213,5 +213,10 @@ function confirm_email(req, res){
 
 }
 
+// router.get('/add_money_to_wallet', auth, add_money)
+
+// function add_money(req, res){
+  
+// }
 
 module.exports = router;    
