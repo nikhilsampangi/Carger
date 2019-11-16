@@ -10,8 +10,8 @@ const schema = new Schema({
         price: {type:Number, required:true}
     }],
     pumps: [{
-        id: {type:String, required:true},
-        status: {type:Boolean, default:false},
+        customid: {type:String, required:true},
+        shutdown: {type:Boolean, default:false},
         pumptype: {type:String, required:true}
     }],
     address: {type:String, required:true},
