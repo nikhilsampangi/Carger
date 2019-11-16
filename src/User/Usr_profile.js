@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 import Navbar from "./Navbar"
 import { ReactComponent as Wallet } from '../assets/piggybank.svg';
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
@@ -8,13 +8,18 @@ import Cookies from "js-cookie";
 export default class User_profile extends Component {
   constructor(props) {
     super(props);
+    this.state = { authenticated: true }
   }
 
   logOut(event) {
     event.preventDefault()
     Cookies.remove('usertoken')
+    this.setState({ authenticated: false })
   }
   render() {
+    if (!this.state.authenticated) {
+      return <Redirect to="/" />
+    }
     return (
       <div>
         <Navbar />
@@ -40,8 +45,8 @@ export default class User_profile extends Component {
                   <div className="card-title row">
                     <span style={{ "fontFamily": "Josefin Sans, sans-serif", "fontSize": "2em" }} className="col-10">
                       Hello User.Name!!
-                    </span>
-                    <Link to="/"><button className="btn btn-outline-dark col-2" onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button></Link>
+                      </span>
+                    <button className="btn btn-outline-dark col-2" onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button>
                   </div>
                   <br /><br />
                   <div className="row">
@@ -66,6 +71,7 @@ export default class User_profile extends Component {
     )
   }
 }
+
 
 class Wallet_Balance extends Component {
   render() {
