@@ -14,7 +14,8 @@ function change_bg(cls) {
 export default class Adm_home extends Component {
   constructor(props) {
     super(props);
-    this.state = { Tab: 1 }
+    this.state = { Tab: 1
+     }
   }
 
   render() {

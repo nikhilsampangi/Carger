@@ -214,17 +214,18 @@ function login(req, res) {
 router.post('/addstation', addStation)
 
 function addStation(req, res) {
-    // const petrolstationdata = {
-    //     name : req.body.name,
-    //     // fuelDetails : req.body.fuelDetails,
-    //     address: req.body.address,
-    //     // pumps: req.body.pumps
-    // }
-    console.log(req)
-    console.log(JSON.parse(req))
-    res.send('done')
-    // res.send(req)
-    //res.body.fuelDetails is array of objects
+  
+    const petrolstationdata = {
+        name : req.body.name,
+        fuelDetails : req.body.fuelDetails,
+        address: req.body.address,
+        pumps: req.body.pumps
+    }
+    
+    
+    // res.send('done')
+    
+    // res.body.fuelDetails is array of objects
 
     Admin.findOne({
         email: req.body.email
@@ -235,7 +236,7 @@ function addStation(req, res) {
                 name: req.body.name
             })
             .then(petrol=> {
-                res.send('api')
+                
                 if(!petrol) {
                     PetrolStation.create(petrolstationdata)
                     res.send('Petrol Station added')
