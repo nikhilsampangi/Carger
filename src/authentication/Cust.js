@@ -201,7 +201,7 @@ class Register extends Component {
 
   render() {
     if (this.state.authenticated === 1) {
-      return <Redirect to="/Home" />
+      return <Redirect to="/Customer" />
     }
     return (
       <form className="form form-signup row" onSubmit={this.handleSubmit}>

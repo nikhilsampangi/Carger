@@ -15,7 +15,7 @@ import Adm from "./authentication/Adm";
 import Stf_home from "./Staff/Stf_home";
 import Adm_home from "./admin/Adm_home";
 
-import transaction from "./transaction/transaction_ui";
+// import transaction from "./transaction/transaction_ui";
 
 
 import Usr_home from "./User/Usr_home";
@@ -41,7 +41,8 @@ export default class App extends Component {
             <Route exact path="/Employee_home" component={Stf_home} />
             <Route exact path="/Admin_home" component={Adm_home} />
 
-            <Route exact path="/pay" component={transaction} />
+            {/* <Route exact path="/pay" component={transaction} /> */}
+
             <Route exact path="/Home" component={Usr_home} />
             <Route exact path="/User_Shop" component={Usr_shop} />
             <Route exact path="/User_Wallet" component={Usr_wallet} />
