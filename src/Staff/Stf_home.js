@@ -5,6 +5,7 @@ import "./Stf_home.css"
 import { ReactComponent as FuelPump } from '../assets/Pump.svg';
 import { ReactComponent as FuelPumpoff } from '../assets/Pump_off.svg';
 import Progress from 'react-circle-progress-bar';
+import Rating from '@prontopro/react-rating';
 
 function change_bg(cls) {
   document
@@ -28,7 +29,7 @@ export default class Stf_home extends Component {
   // }
   constructor(props) {
     super(props);
-    this.state = { Tab: 1 }
+    this.state = { Tab: 4 }
   }
 
   // componentDidMount() {
@@ -302,7 +303,28 @@ class CustomerFeedback extends Component {
   render() {
     return (
       <div>
-        Customer Feedback
+        <div className="row">
+          <div className="col-1" />
+          <div className="col-9" style={{ "height": "45vh", "borderRadius": "20px", "backgroundColor": "white" }}>
+            <div className="container" style={{ "padding": "3%" }}>
+              <div className="row" style={{ "fontSize": "1.1em", "paddingTop": "20px", "textAlign": "center" }}>
+                <div className="col">
+                  <i className="fa fa-user" />&nbsp;&nbsp;Customer.Name
+                </div>
+                <div className="col">
+                  <i className="fa fa-list-alt" />&nbsp;&nbsp;Trasaction.details
+                </div>
+                <div className="col">
+                  <i className="fa fa-clock" />&nbsp;&nbsp;Trasaction.time
+                </div>
+              </div>
+              <div className="row">
+                <Rating animateOnHover={true} initialRate={3} readonly={true} />
+              </div>
+            </div>
+          </div>
+          <div className="col-2" />
+        </div>
       </div>
     )
   }
