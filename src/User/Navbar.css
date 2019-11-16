@@ -1,0 +1,8 @@
+.userhomenavbar {
+  background-image: url("../assets/navbar.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  /* padding-top: 2rem;
+  padding-bottom: 4.7rem; */
+  height: 10rem;
+}

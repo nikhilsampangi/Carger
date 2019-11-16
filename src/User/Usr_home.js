@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { ReactComponent as Navbarbg } from "../assets/navbar.svg";
+import React, { Component } from 'react';
 import "./Usr_home.css";
+import Navbar from "./Navbar"
 
 function change_bg(cls) {
   document
@@ -14,34 +14,13 @@ export default class Usr_home extends Component {
     return (
       <div className="container-fluid" onLoad={change_bg("usrhome")}>
         <Navbar />
+        <br />
+        <br />
+        <br />
+        <br />
+        wats happening
       </div>
     )
   }
 }
 
-class Navbar extends Component {
-  render() {
-    return (
-      <div>
-        <nav className="navbar fixed-top navbar-expand-lg navbar-light userhomenavbar row">
-          <div className="col">
-            1
-          </div>
-          <div className="col">
-            2
-          </div>
-          <div className="col">
-
-          </div>
-          <div className="col">
-            3
-          </div>
-          <div className="col">
-            4
-          </div>
-        </nav>
-
-      </div>
-    )
-  }
-}
