@@ -39,7 +39,7 @@ const schema = new Schema({
     
     eId: {type:String},
     
-    balance: {type:String},
+    balance: {type:String, default: '0.00' },
     
     eWalletPin: {type:String},
     
@@ -79,7 +79,7 @@ const schema = new Schema({
 
         updatedAt: {type:Date, default: Date.now, required:true}, 
 
-        amount: {type:Number, required:true}
+        amount: {type:String, required:true}
 
     }]
     

@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 function send_mail(body, to_email){
     
     mailOptions={
-        from: 'bharathjohn57@gmail.com',
+        from: '',
         to : to_email,
         subject : "Please confirm your Email account",
         html : body 
