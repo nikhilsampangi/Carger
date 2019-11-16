@@ -4,16 +4,12 @@ import Navbar from "./Navbar";
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import { pay } from '../authentication/userFunctions';
 import Cookies from 'js-cookie';
-import {
-  HashRouter as Router,
-  Route,
-  Switch,
-} from "react-router-dom"
+import Modal from 'react-responsive-modal';
 
 export default class Usr_wallet extends Component {
   constructor(props) {
     super(props);
-    this.state = { amount: '', redirectLink: '' };
+    this.state = { amount: '', redirectLink: '', errorFlag: false, errMsg: "" };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -37,7 +33,8 @@ export default class Usr_wallet extends Component {
             this.setState({ redirectLink: res.data })
           }
           else {
-            console.log(res.error)
+            this.setState({ errorFlag: true, errMsg: res.error })
+            // console.log(res.error)
           }
         })
         .catch(err => {
@@ -54,8 +51,20 @@ export default class Usr_wallet extends Component {
 
     return (
       <div>
+        <Modal open={this.state.errorFlag} onClose={() => this.setState({ errorFlag: false })} center={true}>
+          <div className="container" style={{ "width": "35vw", "padding": "5%" }}>
+            <div className="card text-center border-danger">
+              <div className="card-header" style={{ "backgroundColor": "#dc3545", "color": "white" }}>
+                <h3>Error</h3>
+              </div>
+              <div className="card-body">
+                {this.state.errMsg}
+              </div>
+            </div>
+          </div>
+        </Modal>
         <Navbar />
-        <br /><br /><br /><br /><br /><br /><br />
+        <br /> <br /> <br /> <br /> <br /> <br /> <br />
         <div className="container">
           <Grad_Strip />
           <div className="row">
@@ -92,26 +101,8 @@ export default class Usr_wallet extends Component {
               </div>
             }
           </div>
-          <br />
-          {this.props.success === 1 ?
-            <div className="row">
-              <div className="col">
-                Payment Successful !!!
-              </div>
-            </div>
-            :
-            null
-          }
         </div>
       </div >
-    )
-  }
-}
-
-export class Usr_wallet_success extends Component {
-  render() {
-    return (
-      <Usr_wallet success={1} />
     )
   }
 }

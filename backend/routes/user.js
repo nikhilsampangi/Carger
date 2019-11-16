@@ -298,7 +298,7 @@ function success(req, res) {
 
           transaction.update_balance(data)
 
-          res.redirect('http://localhost:3000/#/User_Wallet/Success')
+          res.redirect('http://localhost:3000/#/User_Wallet_Success')
         })
         .catch(err => {
           console.log(err)

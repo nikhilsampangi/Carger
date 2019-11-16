@@ -21,6 +21,7 @@ import Adm_home from "./admin/Adm_home";
 import Usr_home from "./User/Usr_home";
 import Usr_shop from "./User/Usr_shop";
 import Usr_wallet from "./User/Usr_wallet";
+import Usr_wallet_success from "./User/Usr_wallet";
 import Usr_about from "./User/Usr_about";
 import Usr_profile from "./User/Usr_profile";
 
@@ -46,6 +47,7 @@ export default class App extends Component {
             <Route exact path="/Home" component={Usr_home} />
             <Route exact path="/User_Shop" component={Usr_shop} />
             <Route exact path="/User_Wallet" component={Usr_wallet} />
+            <Route exact path="/User_Wallet_Success" component={Usr_wallet_success} />
             <Route exact path="/User_About" component={Usr_about} />
             <Route exact path="/User_Profile" component={Usr_profile} />
 

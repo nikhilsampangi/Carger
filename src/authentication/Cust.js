@@ -122,8 +122,8 @@ class Login extends Component {
       <form className="form form-login" onSubmit={this.handleSubmit}>
         <Modal open={this.state.errorFlag} onClose={() => this.setState({ errorFlag: false })} closeOnOverlayClick={true}>
           <div className="container" style={{ "width": "35vw", "padding": "5%" }}>
-            <div className="card text-center">
-              <div className="card-header">
+            <div className="card text-center border-danger">
+              <div className="card-header" style={{ "backgroundColor": "#dc3545", "color": "white" }}>
                 Error
               </div>
               <div className="card-body">
