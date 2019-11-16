@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link, Redirect } from "react-router-dom";
 import Navbar from "./Navbar";
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
@@ -48,61 +48,79 @@ export default class Usr_wallet extends Component {
   }
 
   render() {
-
-    return (
-      <div>
-        <Modal open={this.state.errorFlag} onClose={() => this.setState({ errorFlag: false })} center={true}>
-          <div className="container" style={{ "width": "35vw", "padding": "5%" }}>
-            <div className="card text-center border-danger">
-              <div className="card-header" style={{ "backgroundColor": "#dc3545", "color": "white" }}>
-                <h3>Error</h3>
-              </div>
-              <div className="card-body">
-                {this.state.errMsg}
+    if (Cookies.get('usertoken')) {
+      return (
+        <div>
+          <Modal open={this.state.errorFlag} onClose={() => this.setState({ errorFlag: false })} center={true}>
+            <div className="container" style={{ "width": "35vw", "padding": "5%" }}>
+              <div className="card text-center border-danger">
+                <div className="card-header" style={{ "backgroundColor": "#dc3545", "color": "white" }}>
+                  <h3>Error</h3>
+                </div>
+                <div className="card-body">
+                  {this.state.errMsg}
+                </div>
               </div>
             </div>
-          </div>
-        </Modal>
-        <Navbar />
-        <br /> <br /> <br /> <br /> <br /> <br /> <br />
-        <div className="container">
-          <Grad_Strip />
-          <div className="row">
-            <div className="col-9" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
-              <h2>Add Money to Wallet</h2>
+          </Modal>
+          <Modal open={this.state.redirectLink === '' ? false : true} center={true}>
+            <div className="card text-center">
+              <div className="card-header">
+                <h2>Info</h2>
+              </div>
+              <div className="card-body" style={{ "fontSize": "1.3em" }}>
+                You are about visit an external site<br />
+                <a href={this.state.redirectLink}>Click Here</a> to proceed to Paypal
             </div>
-            <div className="col-3 d-flex justify-content-end">
-              <span style={{ "fontSize": "2.2em", "color": "green" }}>
-                <i className="fa fa-money-bill-wave" />
-              </span>
-              &nbsp;&nbsp;&nbsp;
+            </div>
+          </Modal>
+          <Navbar />
+          <br /> <br /> <br /> <br /> <br /> <br /> <br />
+          <div className="container">
+            <Grad_Strip />
+            <div className="row">
+              <div className="col-9" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+                <h2>Add Money to Wallet</h2>
+              </div>
+              <div className="col-3 d-flex justify-content-end">
+                <span style={{ "fontSize": "2.2em", "color": "green" }}>
+                  <i className="fa fa-money-bill-wave" />
+                </span>
+                &nbsp;&nbsp;&nbsp;
               <span style={{ "fontSize": "2.2em" }}>
-                <i className="fa fa-angle-double-right" />
-              </span>
-              &nbsp;&nbsp;&nbsp;
+                  <i className="fa fa-angle-double-right" />
+                </span>
+                &nbsp;&nbsp;&nbsp;
               <span style={{ "fontSize": "2.2em", "color": "gold" }}>
-                <i className="fa fa-coins" />
-              </span>
+                  <i className="fa fa-coins" />
+                </span>
+              </div>
             </div>
-          </div>
-          <br />
-          <div className="input-group row">
-            <div className="input-group-prepend">
-              <span className="input-group-text">Amount /-</span>
-            </div>
-            <input type="text" className="form-control" placeholder="00.00" name="amount" value={this.state.amount} onChange={this.handleChange} />
-            {this.state.redirectLink === '' ?
+            <br />
+            <div className="input-group row">
+              <div className="input-group-prepend">
+                <span className="input-group-text">Amount /-</span>
+              </div>
+              <input type="text" className="form-control" placeholder="00.00" name="amount" value={this.state.amount} onChange={this.handleChange} />
               <div className="input-group-prepend">
                 <button className="btn btn-outline-dark" onClick={this.handleSubmit}>Add Money</button>
               </div>
-              :
+              {/*             
               <div className="input-group-prepend">
                 <a className="btn btn-primary" href={this.state.redirectLink}><i className="fa fa-external-link-alt" />&nbsp;Redirect</a>
-              </div>
-            }
+              </div> */}
+
+            </div>
           </div>
-        </div>
-      </div >
-    )
+        </div >
+      )
+    }
+    else {
+      return (
+        <Fragment>
+          <Redirect to="/Customer" />
+        </Fragment>
+      )
+    }
   }
 }

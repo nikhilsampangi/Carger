@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Link, Redirect } from "react-router-dom"
 import Navbar from "./Navbar"
 import { ReactComponent as Wallet } from '../assets/piggybank.svg';
@@ -17,58 +17,64 @@ export default class User_profile extends Component {
     this.setState({ authenticated: false })
   }
   render() {
-    if (!this.state.authenticated) {
-      return <Redirect to="/" />
-    }
-    return (
-      <div>
-        <Navbar />
-        <br /><br /><br /><br /><br /><br /><br />
-        <div className="container">
-          <Grad_Strip />
-          <div className="row">
-            <div className="col" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
-              <h2>Profile</h2>
+    if (Cookies.get('usertoken')) {
+      return (
+        <div>
+          <Navbar />
+          <br /><br /><br /><br /><br /><br /><br />
+          <div className="container">
+            <Grad_Strip />
+            <div className="row">
+              <div className="col" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+                <h2>Profile</h2>
+              </div>
+            </div>
+            <br />
+            <div className="row">
             </div>
           </div>
-          <br />
-          <div className="row">
-          </div>
-        </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-1" />
-            <div className="col-10">
-              <div className="card">
-                <Grad_Strip />
-                <div className="card-body">
-                  <div className="card-title row">
-                    <span style={{ "fontFamily": "Josefin Sans, sans-serif", "fontSize": "2em" }} className="col-10">
-                      Hello User.Name!!
+          <div className="container">
+            <div className="row">
+              <div className="col-1" />
+              <div className="col-10">
+                <div className="card">
+                  <Grad_Strip />
+                  <div className="card-body">
+                    <div className="card-title row">
+                      <span style={{ "fontFamily": "Josefin Sans, sans-serif", "fontSize": "2em" }} className="col-10">
+                        Hello User.Name!!
                       </span>
-                    <button className="btn btn-outline-dark col-2" onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button>
-                  </div>
-                  <br /><br />
-                  <div className="row">
-                    <div className="col">
-                      <Wallet_Balance />
+                      <button className="btn btn-outline-dark col-2" onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button>
                     </div>
-                    <div className="col-1" />
-                    <div className="col">
-                      <Recent_Transactions />
+                    <br /><br />
+                    <div className="row">
+                      <div className="col">
+                        <Wallet_Balance />
+                      </div>
+                      <div className="col-1" />
+                      <div className="col">
+                        <Recent_Transactions />
+                      </div>
                     </div>
-                  </div>
-                  <div className="row">
+                    <div className="row">
 
+                    </div>
                   </div>
                 </div>
               </div>
+              <div className="col-1" />
             </div>
-            <div className="col-1" />
           </div>
         </div>
-      </div>
-    )
+      )
+    }
+    else {
+      return (
+        <Fragment>
+          <Redirect to="/Customer" />
+        </Fragment>
+      )
+    }
   }
 }
 

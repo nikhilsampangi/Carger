@@ -204,14 +204,16 @@ function confirm_email(req, res) {
   }, newValues)
     .then(user => {
       if (user) {
-        res.send("verified")
+        res.redirect('http://localhost:3000/#/Email_Verification_Success')
       }
       else {
         res.json({ error: "not verified" })
+        res.redirect('http://localhost:3000/#/Email_Verification_Failed')
       }
     })
     .catch(err => {
       res.json('error:' + err)
+      res.redirect('http://localhost:3000/#/Email_Verification_Failed')
     });
 
 }

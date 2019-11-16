@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Redirect } from "react-router-dom";
 import { ReactComponent as Car } from '../assets/fp_car.svg';
 import "./Cust.css";
 import { register } from './userFunctions';
 import { login } from './userFunctions';
 import Modal from 'react-responsive-modal';
+import Cookies from 'js-cookie';
 
 function change_bg(cls) {
   document
@@ -40,38 +41,48 @@ export default class Cust extends Component {
       classr = "form-wrapper is-active"
       classl = "form-wrapper"
     }
-    return (
-      <div onLoad={change_bg("auth")}>
-        <div className="row">
-          <div className="col-6">
-            {/* <button className="btn btn-primary" onClick={() => this.setState({ login: true })}>
+    if (!Cookies.get('usertoken')) {
+      return (
+        <div onLoad={change_bg("auth")}>
+          <div className="row">
+            <div className="col-6">
+              {/* <button className="btn btn-primary" onClick={() => this.setState({ login: true })}>
               Login
             </button>
             <button className="btn btn-primary" onClick={() => this.setState({ login: false })}>
               Register
             </button> */}
-            <div className="forms">
-              <div className={classl}>
-                <button type="button" className="switcher switcher-login" onClick={() => this.setState({ login: true })}>
-                  Login
+              <div className="forms">
+                <div className={classl}>
+                  <button type="button" className="switcher switcher-login" onClick={() => this.setState({ login: true })}>
+                    Login
                   <span className="underline"></span>
-                </button>
-                <Login />
-              </div>
-              <div className={classr}>
-                <button type="button" className="switcher switcher-signup" onClick={() => this.setState({ login: false })}>
-                  Register
+                  </button>
+                  <Login />
+                </div>
+                <div className={classr}>
+                  <button type="button" className="switcher switcher-signup" onClick={() => this.setState({ login: false })}>
+                    Register
                   <span className="underline"></span>
-                </button>
-                <Register />
+                  </button>
+                  <Register />
+                </div>
               </div>
+              {/* {this.state.login ? <Login /> : <Register />} */}
             </div>
-            {/* {this.state.login ? <Login /> : <Register />} */}
           </div>
+          <Car id="car2" className="animated slideInLeft" />
         </div>
-        <Car id="car2" className="animated slideInLeft" />
-      </div>
-    )
+      )
+    }
+    else {
+      return (
+        <Fragment>
+          <Redirect to="/Home" />
+        </Fragment>
+      )
+
+    }
   }
 }
 
