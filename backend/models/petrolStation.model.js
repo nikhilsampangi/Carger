@@ -11,6 +11,7 @@ const schema = new Schema({
     }],
     pumps: [{
         id: {type:String, required:true},
+        status: {type:Boolean, required:true}
     }],
     address: {type:String, required:true},
     emergencyShutdown: {type:Boolean, default:false},
