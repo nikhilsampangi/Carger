@@ -4,6 +4,8 @@ import { ReactComponent as Logo } from "../assets/logo_v1.svg";
 import { ReactComponent as OutletImage } from "../assets/outlet.svg";
 import "./Adm_home.css";
 import Cookies from 'js-cookie';
+import '../authentication/adminFunctions';
+import { addpetrolstation } from '../authentication/adminFunctions';
 
 function change_bg(cls) {
   document
@@ -46,7 +48,7 @@ export default class Adm_home extends Component {
     }
     return (
       <div onLoad={change_bg("adminpages")} className="container-fluid">
-        <nav class="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow" style={{ "backgroundColor": "#1f262d" }}>
+        <nav className="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow" style={{ "backgroundColor": "#1f262d" }}>
           <Link to="/Admin_home">
             <Logo id="stfhmlogo" />
           </Link>
@@ -145,6 +147,29 @@ class UpdateOutletList extends Component {
     super(props);
     this.state = { addOutletSwitch: 0 }
   }
+
+  // handleSubmit(event) {
+  //   if(Cookies.get('usertoken')){
+  //     const state = this.props.state;
+  //     console.log(state)
+  //     const outlet= {
+  //         outletName: state.outletName,
+  //         outletAddress: state.outletAddress,
+  //         dieselCapacity: state.dieselCapacity,
+  //         petrolCapacity: state.petrolCapacity,
+  //         cngCapacity: state.cngCapacity,
+  //         petrolPumps: state.petrolPumps,
+  //         dieselPumps: state.dieselPumps,
+  //         cngPumps: state.cngPumps,
+  //         token: Cookies.get('usertoken')
+  //     }
+  //     console.log(outlet);
+  //   } 
+  //   else{
+  //     console.log('please login');
+  //   }
+  // }
+
   render() {
     return (
       <div className="container-fluid">
@@ -154,7 +179,9 @@ class UpdateOutletList extends Component {
           </button>
           :
           // Backend
-          <button className="btn btn-outline-dark btn-block btn-lg" onClick={() => this.setState({ addOutletSwitch: 0 })}>
+          <button className="btn btn-outline-dark btn-block btn-lg" onClick={() => this.setState({ addOutletSwitch: 0 }, ()=> {
+            AddOutletForm.prototype.handleSubmit();
+          })}>
             <i className="fas fa-save"></i>&nbsp;&nbsp;Save Changes 
           </button>
         }
@@ -264,7 +291,9 @@ class AddOutletForm extends Component {
   }
   
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value }, ()=>{
+      console.log(this.state);
+    });
   }
 
   handleSubmit(event) {
@@ -281,6 +310,21 @@ class AddOutletForm extends Component {
           token: Cookies.get('usertoken')
       }
       console.log(outlet)
+      addpetrolstation(outlet)
+      .then(res => {
+        if (res.status) {
+          // this.props.history.push('/')
+          console.log(res.data)
+          // this.setState({authenticated:true})
+        }
+        else {
+          console.log(res.error)
+        }
+      })
+      .catch(err => {
+        console.log('error:-' + err)
+      })
+
     } 
     else{
       console.log('please login')
@@ -386,6 +430,9 @@ class AddOutletForm extends Component {
               <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps"  value={this.state.dieselPumps} name='dieselPumps'  onChange={this.handleChange}/></div>
               <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps"  value={this.state.petrolPumps} name='petrolPumps' onChange={this.handleChange}/></div>
               <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange}/></div>
+              <button className="btn btn-outline-success btn-sm" onClick={() => this.handleSubmit}>
+                    Submit
+                </button>
             </div>
           </form>
         </div>

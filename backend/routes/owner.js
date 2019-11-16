@@ -289,17 +289,17 @@ function addStation(req, res) {
 }
 
 
-// router.get('/getpetrolpump', getpetrolpump);
+router.get('/getpetrolpump', getpetrolpump);
 
-// function getpetrolpump(req, res) {
-//   PetrolStation.findOne({
-//     name: req.body.name
-//   })
-//   .then(petrol => {
-//     console.log(petrol)
-//     res.send('valid')
-//   })
-// }
+function getpetrolpump(req, res) {
+  PetrolStation.findOne({
+    name: req.body.name
+  })
+  .then(petrol => {
+    console.log(petrol)
+    res.send('valid')
+  })
+}
 
 
 module.exports = router;
