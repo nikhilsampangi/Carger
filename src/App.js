@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import ReactDOM from "react-dom";
 import {
   HashRouter as Router,
   Route,
@@ -15,6 +14,7 @@ import Stf from "./authentication/Stf";
 import Adm from "./authentication/Adm";
 import Stf_home from "./Staff/Stf_home";
 import Adm_home from "./admin/Adm_home"
+import Usr_home from "./User/Usr_home"
 // import Register from "./Register"
 // import Login from "./Login"
 
@@ -31,6 +31,7 @@ export default class App extends Component {
             <Route exact path="/Admin" component={Adm} />
             <Route exact path="/Employee_home" component={Stf_home} />
             <Route exact path="/Admin_home" component={Adm_home} />
+            <Route exact path="/Home" component={Usr_home} />
             {/* <div className="App" >
             <div className="App-header">
               <img src={logo} className="App-logo"

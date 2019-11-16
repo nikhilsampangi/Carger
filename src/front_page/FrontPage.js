@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+// import { Link, Redirect } from "react-router-dom";
 import { ReactComponent as Logo_1 } from '../assets/logo_v1.svg';
 import { ReactComponent as Cust } from '../assets/cust.svg';
 import { ReactComponent as Stf } from '../assets/stf.svg';
