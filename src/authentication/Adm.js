@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { ReactComponent as Car } from '../assets/fp_car.svg';
 import "./Adm.css";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { login } from './adminFunctions';
 
 function change_bg(cls) {
   document
@@ -12,6 +13,11 @@ function change_bg(cls) {
 
 
 export default class Adm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { login: true }
+  }
+
   render() {
     return (
       <div onLoad={change_bg("auth")}>
@@ -41,22 +47,60 @@ export default class Adm extends Component {
 }
 
 class Login extends Component {
+  constructor() {
+    super();
+    this.state = { email: '', hashedPassword: '' , authenticated: false};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleSubmit(event) {
+    const user = {
+      email: this.state.email,
+      hashedPassword: this.state.hashedPassword
+    }
+    console.log(user)
+    login(user)
+      .then(res => {
+        if (res.status) {
+          // this.props.history.push('/')
+          console.log(res.data)
+          this.setState({authenticated:true})
+        }
+        else {
+          console.log(res.error)
+        }
+      })
+      .catch(err => {
+        console.log('error:-' + err)
+      })
+
+    event.preventDefault();
+  }
+
   render() {
+    if (this.state.authenticated){
+      return (<Redirect to="/Admin_home"/>)
+    }
     return (
-      <form className="form form-login" style={{ "border": "2px solid #a7e245" }}>
+      <form className="form form-login" style={{ "border": "2px solid #a7e245" }} onSubmit={this.handleSubmit}>
         <fieldset>
           <legend> Please, enter your email and password for login</legend>
           <div className="input-block">
             <label for="login-email">E-mail</label>
-            <input id="login-email" type="email" required />
+            <input id="login-email" type="email" name="email" value={this.state.email} onChange={this.handleChange} required />
           </div>
           <div className="input-block">
             <label for="login-password">Password</label>
-            <input id="login-password" type="password" required />
+            <input id="login-password" type="password" name="hashedPassword" value={this.state.hashedPassword} onChange={this.handleChange} required />
           </div>
         </fieldset>
-        <Link type="submit" className="btn btn-outline-success btn-login" to="/Admin_home">Login</Link>
-        {/* <button type="submit" className="btn btn-outline-success btn-login">Login</button> */}
+        {/* <Link type="submit" className="btn btn-outline-success btn-login" to="/Admin_home">Login</Link> */}
+        <button type="submit" className="btn btn-outline-success btn-login">Login</button>
       </form>
 
     )
