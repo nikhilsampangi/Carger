@@ -3,8 +3,6 @@ const router = express.Router();
 const cors = require('cors');
 const paypal = require('paypal-rest-sdk');
 
-router.use(cors());
-
 router.post('/pay', pay)
 
 function pay(req, res) {
