@@ -39,6 +39,8 @@ export default class Adm_home extends Component {
       case 5:
         ACf = "ACfActive"
         break;
+      default:
+        break;
     }
     return (
       <div onLoad={change_bg("adminpages")} className="container-fluid">
@@ -65,25 +67,25 @@ export default class Adm_home extends Component {
               &nbsp;&nbsp;&nbsp;
               Outlet Overview
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={ASd} ref="TabChange" onClick={() => this.setState({ Tab: 2 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i className="fas fa-truck-moving"></i>
               &nbsp;&nbsp;&nbsp;
               Schedule Delivery
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={ARs} ref="TabChange" onClick={() => this.setState({ Tab: 3 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i className="fas fa-money-check-alt"></i>
               &nbsp;&nbsp;&nbsp;
               Revenue Statistics
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={AUo} ref="TabChange" onClick={() => this.setState({ Tab: 4 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i className="fas fa-map-marked-alt"></i>
               &nbsp;&nbsp;&nbsp;
               Update Outlet List
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={ACf} ref="TabChange" onClick={() => this.setState({ Tab: 5 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i className="fas fa-comments"></i>
               &nbsp;&nbsp;&nbsp;
@@ -92,11 +94,11 @@ export default class Adm_home extends Component {
           </div>
           <br /><br /><br /><br /><br />
           <div className="MainContent" style={{ "marginLeft": "19vw" }}>
-            {this.state.Tab == 1 ? <OutletOverview /> : null}
-            {this.state.Tab == 2 ? <ScheduleDelivery /> : null}
-            {this.state.Tab == 3 ? <RevenueStatistics /> : null}
-            {this.state.Tab == 4 ? <UpdateOutletList /> : null}
-            {this.state.Tab == 5 ? <CustomerFeedback /> : null}
+            {this.state.Tab === 1 ? <OutletOverview /> : null}
+            {this.state.Tab === 2 ? <ScheduleDelivery /> : null}
+            {this.state.Tab === 3 ? <RevenueStatistics /> : null}
+            {this.state.Tab === 4 ? <UpdateOutletList /> : null}
+            {this.state.Tab === 5 ? <CustomerFeedback /> : null}
           </div>
         </div>
 
@@ -144,7 +146,7 @@ class UpdateOutletList extends Component {
   render() {
     return (
       <div className="container-fluid">
-        {this.state.addOutletSwitch == 0 ?
+        {this.state.addOutletSwitch === 0 ?
           <button className="btn btn-outline-dark btn-block btn-lg" onClick={() => this.setState({ addOutletSwitch: 1 })}>
             <i className="fas fa-gas-pump"></i>&nbsp;&nbsp;Add New Outlet&nbsp;&nbsp;<i className="fas fa-gas-pump"></i>
           </button>
@@ -157,7 +159,7 @@ class UpdateOutletList extends Component {
         <br />
         <br />
         {/* Backend : Send no of outlets here */}
-        {this.state.addOutletSwitch == 0 ?
+        {this.state.addOutletSwitch === 0 ?
           <OutletsList outletcount={7} />
           :
           <AddOutletForm />
@@ -278,7 +280,7 @@ class AddOutletForm extends Component {
             <div className="form-group row" >
               <div className="col-2">Fuel Types </div>
               <div className="col-2">
-                {this.state.showd == 0 ?
+                {this.state.showd === 0 ?
                   <button className="btn btn-outline-success btn-sm" onClick={() => this.setState({ showd: 1 })}>
                     <i className="fa fa-check" />
                     &nbsp;&nbsp;
@@ -293,7 +295,7 @@ class AddOutletForm extends Component {
                 }
               </div>
               <div className="col-2">
-                {this.state.showp == 0 ?
+                {this.state.showp === 0 ?
                   <button className="btn btn-outline-success btn-sm" onClick={() => this.setState({ showp: 1 })}>
                     <i className="fa fa-check" />
                     &nbsp;&nbsp;
@@ -308,7 +310,7 @@ class AddOutletForm extends Component {
                 }
               </div>
               <div className="col-2">
-                {this.state.showc == 0 ?
+                {this.state.showc === 0 ?
                   <button className="btn btn-outline-success btn-sm" onClick={() => this.setState({ showc: 1 })}>
                     <i className="fa fa-check" />
                     &nbsp;&nbsp;

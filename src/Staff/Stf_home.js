@@ -44,16 +44,16 @@ export default class Stf_home extends Component {
     let Rs = "Rs"
     let Ps = "Ps"
     let Cf = "Cf"
-    if (this.state.Tab == 1) {
+    if (this.state.Tab === 1) {
       Db = "DbActive"
     }
-    else if (this.state.Tab == 2) {
+    else if (this.state.Tab === 2) {
       Rs = "RsActive"
     }
-    else if (this.state.Tab == 3) {
+    else if (this.state.Tab === 3) {
       Ps = "PsActive"
     }
-    else if (this.state.Tab == 4) {
+    else if (this.state.Tab === 4) {
       Cf = "CfActive"
     }
     return (
@@ -81,26 +81,26 @@ export default class Stf_home extends Component {
               Dashboard
               {/* <i className="fas fa-chevron-right"></i> */}
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={Rs} ref="TabChange" onClick={() => this.setState({ Tab: 2 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i class="fas fa-money-check-alt"></i>&nbsp;&nbsp;&nbsp;Revenue Statistics
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={Ps} ref="TabChange" onClick={() => this.setState({ Tab: 3 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i class="fas fa-gas-pump"></i>&nbsp;&nbsp;&nbsp;Pump Statistics
             </div>
-            <hr style={{ "backgroundColor": "#1f262d" }} style={{ "marginTop": "0", "marginBottom": "0" }} />
+            <hr style={{ "backgroundColor": "#1f262d", "marginTop": "0", "marginBottom": "0" }} />
             <div className="SBItem" id={Cf} ref="TabChange" onClick={() => this.setState({ Tab: 4 })} style={{ "paddingTop": "1.2rem", "paddingBottom": "1.2rem" }}>
               <i class="fas fa-comment-dots"></i>&nbsp;&nbsp;&nbsp;Customer Feedback
             </div>
           </div>
           <br /><br /><br /><br /><br />
           <div className="MainContent" style={{ "marginLeft": "19vw" }}>
-            {this.state.Tab == 1 ? <Dashboard /> : null}
-            {this.state.Tab == 2 ? <RevenueStatistics /> : null}
+            {this.state.Tab === 1 ? <Dashboard /> : null}
+            {this.state.Tab === 2 ? <RevenueStatistics /> : null}
             {/* backend - array of no of pumps [diesel, petrol, cng] should be passed in here - */}
-            {this.state.Tab == 3 ? <PumpStatistics pumpcount={[3, 4, 3]} /> : null}
-            {this.state.Tab == 4 ? <CustomerFeedback /> : null}
+            {this.state.Tab === 3 ? <PumpStatistics pumpcount={[3, 4, 3]} /> : null}
+            {this.state.Tab === 4 ? <CustomerFeedback /> : null}
           </div>
         </div>
         {/* <script src="dashboard.js"></script> */}
@@ -144,12 +144,12 @@ class PumpStatistics extends Component {
       pumps[0].push(<Pump index={count} fueltype={0} />);
       count = count + 1;
     }
-    for (var i = 0; i < this.props.pumpcount[1]; i++) {
+    for (var j = 0; j < this.props.pumpcount[1]; j++) {
       // Backend : Pass parameters unique for each pump ( fuel quantity) and fuel type 0here
       pumps[1].push(<Pump index={count} fueltype={1} />);
       count = count + 1;
     }
-    for (var i = 0; i < this.props.pumpcount[2]; i++) {
+    for (var k = 0; k < this.props.pumpcount[2]; k++) {
       // Backend : Pass parameters unique for each pump ( fuel quantity) and fuel type 0here
       pumps[2].push(<Pump index={count} fueltype={3} />);
       count = count + 1;
@@ -177,7 +177,7 @@ class StationFuelStatistics extends Component {
     this.state = { updvolswitch: 0 }
   }
   render() {
-    let fname = this.props.fueltype == 0 ? "Diesel" : (this.props.fueltype == 1 ? "Petrol" : "Cng")
+    let fname = this.props.fueltype === 0 ? "Diesel" : (this.props.fueltype === 1 ? "Petrol" : "Cng")
     return (
       <div className="row">
         <div className="col-1" />
@@ -186,10 +186,10 @@ class StationFuelStatistics extends Component {
             <div className="col-1" />
             <div className="col-5">
               {/* Backend : send progress percentage of pump in place of 75 here */}
-              {this.props.fueltype == 0
+              {this.props.fueltype === 0
                 ? <Progress progress={75} subtitle={fname} style={{ "width": "20vw", "paddingTop": "9%" }} />
                 : (
-                  this.props.fueltype == 1
+                  this.props.fueltype === 1
                     ? <Progress progress={75} subtitle={fname} style={{ "width": "20vw", "paddingTop": "9%" }} gradient={[{ stop: 0.0, color: '#f7b733' }, { stop: 1, color: '#fc4a1a' }]} />
                     : <Progress progress={75} subtitle={fname} style={{ "width": "20vw", "paddingTop": "9%" }} gradient={[{ stop: 0.0, color: '#38ef7d' }, { stop: 1, color: '#11998e' }]} />
                 )
@@ -274,7 +274,7 @@ class Pump extends Component {
             </center>
             <br />
             <center className="pumpstats">
-              Fuel Type : {this.props.fueltype == 0 ? <span>diesel</span> : (this.props.fueltype == 1 ? <span>petrol</span> : <span>cng</span>)}
+              Fuel Type : {this.props.fueltype === 0 ? <span>diesel</span> : (this.props.fueltype === 1 ? <span>petrol</span> : <span>cng</span>)}
             </center>
             <br />
             <center className="pumpstats">

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 process.SECRET_KEY = 'secret';
 
 function auth(req, res, next){
-    const token= req.header('authorization');
+    const token= req.header('Authorization');
 
     if(!token){
         res.status(401).json({msg: 'token does not exist'})

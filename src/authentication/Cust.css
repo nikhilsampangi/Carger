@@ -168,8 +168,8 @@ body {
   100% {
     background-color: #ffffff;
     transform: translate(35%, -20px);
-    border-left: 3px solid #a7e245;
-    border-top: 3px solid #a7e245;
+    border: 3px solid #a7e245;
+    /* border-top: 3px solid #a7e245; */
   }
 }
 
@@ -338,4 +338,11 @@ body {
   box-shadow: 3px 3px 5px 6px #ccc;
   /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
 
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
 }
