@@ -48,3 +48,27 @@ export const login = user => {
             }
         })
 }
+
+// export const addOutlet = outlet => {
+//     return axios.post('admin/login', {
+//         email: user.email,
+//         hashedPassword: user.hashedPassword
+//     })
+//         .then(res => {
+//             if (res.data.error) {
+//                 const check = {
+//                     status: false,
+//                     error: res.data.error
+//                 }
+//                 return check
+//             }
+//             else {
+//                 Cookies.set('usertoken', res.data)
+//                 const check = {
+//                     status: true,
+//                     data: res.data
+//                 }
+//                 return check
+//             }
+//         })
+// }
