@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Navbar from "./Navbar"
 import { ReactComponent as Wallet } from '../assets/piggybank.svg';
+import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 
 export default class User_profile extends Component {
   render() {
@@ -8,15 +9,26 @@ export default class User_profile extends Component {
       <div>
         <Navbar />
         <br /><br /><br /><br /><br /><br /><br />
-        <div className="container-fluid">
+        <div className="container">
+          <Grad_Strip />
+          <div className="row">
+            <div className="col" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+              <h2>Profile</h2>
+            </div>
+          </div>
+          <br />
+          <div className="row">
+          </div>
+        </div>
+        <div className="container">
           <div className="row">
             <div className="col-1" />
             <div className="col-10">
               <div className="card">
-                <div className="card-header"></div>
+                <Grad_Strip />
                 <div className="card-body">
                   <div className="card-title row">
-                    <span style={{ "fontSize": "2em" }} className="col-10">
+                    <span style={{ "fontFamily": "Josefin Sans, sans-serif", "fontSize": "2em" }} className="col-10">
                       Hello User.Name!!
                     </span>
                     <button className="btn btn-outline-dark col-2"><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button>
