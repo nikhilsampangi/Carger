@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo_v1.svg";
 import { ReactComponent as OutletImage } from "../assets/outlet.svg";
 import "./Adm_home.css";
+import Cookies from 'js-cookie';
 
 function change_bg(cls) {
   document
@@ -154,7 +155,7 @@ class UpdateOutletList extends Component {
           :
           // Backend
           <button className="btn btn-outline-dark btn-block btn-lg" onClick={() => this.setState({ addOutletSwitch: 0 })}>
-            <i className="fas fa-save"></i>&nbsp;&nbsp;Save Changes
+            <i className="fas fa-save"></i>&nbsp;&nbsp;Save Changes 
           </button>
         }
         <br />
@@ -257,8 +258,55 @@ class Outlet extends Component {
 class AddOutletForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { showd: 0, showp: 0, showc: 0 }
+    this.state = { showd: 0, showp: 0, showc: 0, outletName: '', outletAddress: '', dieselCapacity: '', petrolCapacity: '', cngCapacity: '', petrolPumps:'', dieselPumps: '', cngPumps:''};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+  
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleSubmit(event) {
+    if(Cookies.get('usertoken')){
+      const outlet= {
+          outletName: this.state.outletName,
+          outletAddress: this.state.outletAddress,
+          dieselCapacity: this.state.dieselCapacity,
+          petrolCapacity: this.state.petrolCapacity,
+          cngCapacity: this.state.cngCapacity,
+          petrolPumps: this.state.petrolPumps,
+          dieselPumps: this.state.dieselPumps,
+          cngPumps: this.state.cngPumps,
+          token: Cookies.get('usertoken')
+      }
+      console.log(outlet)
+    } 
+    else{
+      console.log('please login')
+    }
+
+
+    // login(user)
+    //   .then(res => {
+    //     if (res.status) {
+    //       // this.props.history.push('/')
+    //       this.setState({ authenticated: 1 })
+    //       // console.log(res.data)
+    //     }
+    //     else {
+    //       this.setState({ errorFlag: true, errMsg: String(res.error) })
+    //       // console.log(res.error)
+
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log('error:-' + err)
+    //   })
+
+    event.preventDefault();
+  }
+
   render() {
     return (
       <div className="card container" style={{ "padding": "3%" }}>
@@ -266,15 +314,15 @@ class AddOutletForm extends Component {
           New Outlet Enrollment
         </h3>
         <div className="card-body">
-          <form>
+          <form >
             <div className="form-group">
               <label for="formoutletname">Outlet Name</label>
-              <input type="text" id="formoutletname" class="form-control" />
+              <input type="text" id="formoutletname" class="form-control" value={this.state.outletName} name='outletName' onChange={this.handleChange} />
             </div>
             <br />
             <div className="form-group">
               <label for="formaddress">Address</label>
-              <input type="text" id="formaddress" class="form-control" />
+              <input type="text" id="formaddress" class="form-control" value={this.state.outletAddress} name='outletAddress' onChange={this.handleChange}/>
             </div>
             <br />
 
@@ -328,16 +376,16 @@ class AddOutletForm extends Component {
             </div>
             <br />
             <div className="form-row">
-              <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity" disabled={!this.state.showd} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity" disabled={!this.state.showp} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" disabled={!this.state.showc} /></div>
+              <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity"  value={this.state.dieselCapacity} name='dieselCapacity' onChange={this.handleChange}/></div>
+              <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity"  value={this.state.petrolCapacity} name='petrolCapacity' onChange={this.handleChange} /></div>
+              <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" value={this.state.cngCapacity} name='cngCapacity' onChange={this.handleChange}/></div>
             </div>
             <br />
             <div className="form-row">
               <div className="col">No of Pumps</div>
-              <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps" disabled={!this.state.showd} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps" disabled={!this.state.showp} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" disabled={!this.state.showc} /></div>
+              <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps"  value={this.state.dieselPumps} name='dieselPumps'  onChange={this.handleChange}/></div>
+              <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps"  value={this.state.petrolPumps} name='petrolPumps' onChange={this.handleChange}/></div>
+              <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange}/></div>
             </div>
           </form>
         </div>
