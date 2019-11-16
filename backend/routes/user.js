@@ -3,10 +3,10 @@ const router = express.Router();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
-const auth= require('./middleware_jwt');
+const auth = require('./middleware_jwt');
 const randomToken = require('random-token');
 
-const User= require('../models/user.model');
+const User = require('../models/user.model');
 
 const email = require('./send_email');
 
@@ -20,14 +20,13 @@ router.post('/register', register)
 
 function register(req, res) {
 
-      const userData = {
-          username: req.body.username,
-          hashedPassword: req.body.hashedPassword,
-          phone: req.body.phone,
-          email: req.body.email,
-          gender: req.body.gender
-      }
-    
+  const userData = {
+    username: req.body.username,
+    hashedPassword: req.body.hashedPassword,
+    phone: req.body.phone,
+    email: req.body.email,
+    gender: req.body.gender
+  } 
       User.findOne({
           email: req.body.email
       })
@@ -87,6 +86,7 @@ function register(req, res) {
         res.json({error: errors});
       })
 
+
 }
 
 
@@ -113,31 +113,31 @@ function login(req, res){
           } else {
             // Passwords don't match
             res.json({ error: 'Incorrect Password' })
-          }
-        } else {
-          res.json({ error: 'User does not exist' })
         }
-      })
-      .catch(err => {
-        res.send('error: ' + err)
-      });
+      } else {
+        res.json({ error: 'User does not exist' })
+      }
+    })
+    .catch(err => {
+      res.send('error: ' + err)
+    });
 
 }
 
 
-router.get('/profile', auth , profile)
+router.get('/profile', auth, profile)
 
-function profile(req, res){
+function profile(req, res) {
 
   User.findOne({
     _id: req.user._id
   })
     .then(user => {
-      if(user){
+      if (user) {
         res.send(user)
       }
-      else{
-        res.json({error:"user does not exist"})
+      else {
+        res.json({ error: "user does not exist" })
       }
     })
     .catch(err => {
@@ -149,18 +149,18 @@ function profile(req, res){
 
 router.delete('/delete', delete_user)
 
-function delete_user(req, res){
+function delete_user(req, res) {
 
   User.findOneAndDelete({
     email: req.body.email
   })
     .then(user => {
-      if(user){
+      if (user) {
         console.log("user deleted")
         res.send("user deleted")
       }
-      else{
-        res.json({error:"not deleted"})
+      else {
+        res.json({ error: "not deleted" })
       }
     })
     .catch(err => {
@@ -169,46 +169,45 @@ function delete_user(req, res){
 
 }
 
-
 router.post('/get_verified', auth, resend_token)
 
-function resend_token(req, res){
+function resend_token(req, res) {
 
   User.findOne({
     _id: req.user._id
   })
-  .then(user=>{
-    if(user){
-      email.send_verification_token(user.token, user.email)
-      res.json({status: "resent verification token"})
-    }
-    else{
-      res.json({error: "Not a valid user"})
-    }
-  })
-  .catch(err=>{
-    res.json({error: err})
-  });
+    .then(user => {
+      if (user) {
+        email.send_verification_token(user.token, user.email)
+        res.json({ status: "resent verification token" })
+      }
+      else {
+        res.json({ error: "Not a valid user" })
+      }
+    })
+    .catch(err => {
+      res.json({ error: err })
+    });
 
 }
 
 
 router.get('/verify/:token', confirm_email)
 
-function confirm_email(req, res){
+function confirm_email(req, res) {
 
-  let randToken= req.params.token;
-  var newValues = { $set: {isVerified: true } };
+  let randToken = req.params.token;
+  var newValues = { $set: { isVerified: true } };
 
   User.findOneAndUpdate({
     token: randToken
-  }, newValues)  
+  }, newValues)
     .then(user => {
-      if(user){
+      if (user) {
         res.send("verified")
       }
-      else{ 
-        res.json({error:"not verified"})
+      else {
+        res.json({ error: "not verified" })
       }
     })
     .catch(err => {
