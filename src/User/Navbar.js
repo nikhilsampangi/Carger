@@ -42,7 +42,7 @@ export default class Navbar extends Component {
           <div className="col-2" style={{ "paddingBottom": "3rem" }}>
             {this.state.nav_s ?
               <Link to="/User_Shop">
-                <Nav_s_h onMouseLeave={() => this.setState({ nav_s: false })} style={{ "cursor": "pointer" }} />
+                <Nav_s_h onMouseLeave={() => this.setState({ nav_s: false })} className="animated pulse" style={{ "cursor": "pointer" }} />
               </Link>
               :
               <Nav_s onMouseEnter={this.toggle_s} />
@@ -52,7 +52,7 @@ export default class Navbar extends Component {
           <div className="col-2" style={{ "paddingBottom": "3rem" }}>
             {this.state.nav_w ?
               <Link to="/User_Wallet">
-                <Nav_w_h onMouseLeave={() => this.setState({ nav_w: false })} style={{ "cursor": "pointer" }} />
+                <Nav_w_h onMouseLeave={() => this.setState({ nav_w: false })} className="animated pulse" style={{ "cursor": "pointer" }} />
               </Link>
               :
               <Nav_w onMouseEnter={this.toggle_w} />
@@ -60,13 +60,13 @@ export default class Navbar extends Component {
           </div>
           <div className="col-2" style={{ "textAlign": "center" }}>
             <Link to="/Home">
-              <Logo_sym style={{ "height": "15vh", "cursor": "pointer" }} />
+              <Logo_sym style={{ "height": "125px ", "cursor": "pointer" }} />
             </Link>
           </div>
           <div className="col-2" style={{ "paddingBottom": "3rem" }}>
             {this.state.nav_a ?
               <Link to="User_About">
-                <Nav_a_h onMouseLeave={() => this.setState({ nav_a: false })} style={{ "cursor": "pointer" }} />
+                <Nav_a_h onMouseLeave={() => this.setState({ nav_a: false })} className="animated pulse" style={{ "cursor": "pointer" }} />
               </Link>
               :
               <Nav_a onMouseEnter={this.toggle_a} />
@@ -76,7 +76,7 @@ export default class Navbar extends Component {
           <div className="col-2" style={{ "paddingBottom": "3rem" }}>
             {this.state.nav_p ?
               <Link to="User_Profile">
-                <Nav_p_h onMouseLeave={() => this.setState({ nav_p: false })} style={{ "cursor": "pointer" }} />
+                <Nav_p_h onMouseLeave={() => this.setState({ nav_p: false })} className="animated pulse" style={{ "cursor": "pointer" }} />
               </Link>
               :
               <Nav_p onMouseEnter={this.toggle_p} />

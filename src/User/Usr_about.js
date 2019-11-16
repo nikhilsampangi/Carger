@@ -6,6 +6,10 @@ export default class User_about extends Component {
     return (
       <div>
         <Navbar />
+        <br /><br /><br /><br /><br /><br /><br />
+        <div className="container">
+          About Page
+        </div>
       </div>
     )
   }
