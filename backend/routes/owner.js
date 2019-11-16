@@ -7,6 +7,7 @@ const auth = require('./middleware_jwt');
 const randomToken = require('random-token');
 
 const Admin = require('../models/owner.model');
+const PetrolStation = require('../models/petrolStation.model')
 const email = require('./send_email')
 
 router.use(cors());
@@ -125,7 +126,7 @@ function register_admin(req, res){
 
                         const gen_token= randomToken(55);
     
-                        email.send_verification_token(gen_token, user.email);
+                        // email.send_verification_token(gen_token, user.email);
     
                         var newValues = { $set: {token: gen_token } };
                   
@@ -144,7 +145,7 @@ function register_admin(req, res){
                               console.log('error:' + err.message)
                             });
     
-                        res.json({status: "registered and a link is sent to your to get your email verified"});
+                        res.json({status: "registered"});
                       })
     
                       .catch(err => {
@@ -208,6 +209,52 @@ function login(req, res) {
         res.send('error: ' + err)
       });
 
+}
+
+router.post('/addstation', addStation)
+
+function addStation(req, res) {
+  
+    const petrolstationdata = {
+        name : req.body.name,
+        fuelDetails : req.body.fuelDetails,
+        address: req.body.address,
+        pumps: req.body.pumps
+    }
+    
+    
+    // res.send('done')
+    
+    // res.body.fuelDetails is array of objects
+
+    Admin.findOne({
+        email: req.body.email
+    })
+    .then(admin => {
+        if(admin) {
+            PetrolStation.findOne({
+                name: req.body.name
+            })
+            .then(petrol=> {
+                
+                if(!petrol) {
+                    PetrolStation.create(petrolstationdata)
+                    res.send('Petrol Station added')
+                }
+                else {
+                  res.json({
+                    error: "Petrol Station already exists"
+                  })
+                }
+            })
+            .catch(err => {
+              res.send('error: '+ err)
+            })
+        }
+    })
+    .catch(err => {
+      res.send('error: '+err)
+    })
 }
 
 module.exports = router;

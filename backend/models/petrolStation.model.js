@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    pid: {type:String, required:true},
-    name: {type:String, required:true},
+    //pid=_id
+    name: {type:String, required:true, unique:true},
     fuelDetails: [{
         fuel: {type:String, required:true},
         quantity: {type:String, required:true}, 
@@ -11,7 +11,8 @@ const schema = new Schema({
     }],
     pumps: [{
         id: {type:String, required:true},
-        status: {type:Boolean, required:true}
+        status: {type:Boolean, default:false},
+        pumptype: {type:String, required:true}
     }],
     address: {type:String, required:true},
     emergencyShutdown: {type:Boolean, default:false},
