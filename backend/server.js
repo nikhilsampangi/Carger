@@ -4,11 +4,20 @@ const mongoose= require('mongoose');
 const bodyParser = require('body-parser');
 const app= express();
 const port= 8008;
+const paypal= require('paypal-rest-sdk');
 
 app.use(cors());
 
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AfiQt3Lo69K_jTV_YZ-XhfK0jjMFkz9xJ49kpUijjBTP8TGMLPbya1VKlGeeULe94wy7tDECEiPCNEGT',
+    'client_secret': 'EPgwL7eU8hEnRVqhoRuXNA9iFnkHSzviaOfJQZ9fU18mLaYkNDLjRpKJGRsS5Z4UGtYA8rY9VGJr83MK'
+  });
+
+
 // uri = 'mongodb+srv://someuser:mdimy7UckXKlOZZi@carger-5v3o8.mongodb.net/test?retryWrites=true&w=majority'
 // mongoose.connect(uri, {useNewUrlParser: true});
+
 mongoose.connect('mongodb://localhost:27017/cargerdb', {useNewUrlParser: true});
 
 mongoose.set('useFindAndModify', false);
