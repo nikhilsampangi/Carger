@@ -1,9 +1,19 @@
 import React, { Component } from 'react'
+import { Link } from "react-router-dom"
 import Navbar from "./Navbar"
 import { ReactComponent as Wallet } from '../assets/piggybank.svg';
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
+import Cookies from "js-cookie";
 
 export default class User_profile extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  logOut(event) {
+    event.preventDefault()
+    Cookies.remove('usertoken')
+  }
   render() {
     return (
       <div>
@@ -31,7 +41,7 @@ export default class User_profile extends Component {
                     <span style={{ "fontFamily": "Josefin Sans, sans-serif", "fontSize": "2em" }} className="col-10">
                       Hello User.Name!!
                     </span>
-                    <button className="btn btn-outline-dark col-2"><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button>
+                    <Link to="/"><button className="btn btn-outline-dark col-2" onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button></Link>
                   </div>
                   <br /><br />
                   <div className="row">
