@@ -24,6 +24,8 @@ import Usr_wallet from "./User/Usr_wallet";
 import Usr_wallet_success from "./User/Usr_wallet";
 import Usr_about from "./User/Usr_about";
 import Usr_profile from "./User/Usr_profile";
+import Email_verf from "./authentication/Email_auth"
+
 
 // import Register from "./Register"
 // import Login from "./Login"
@@ -50,6 +52,8 @@ export default class App extends Component {
             <Route exact path="/User_Wallet_Success" component={Usr_wallet_success} />
             <Route exact path="/User_About" component={Usr_about} />
             <Route exact path="/User_Profile" component={Usr_profile} />
+            <Route exact path="/Email_Verification/:id" exact component={Email_verf} />
+            {/* <Route exact path="/Email_Verification_Failed" component={Email_v_f} /> */}
 
             {/* <div className="App" >
             <div className="App-header">
