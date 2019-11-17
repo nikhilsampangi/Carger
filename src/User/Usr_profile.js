@@ -71,7 +71,7 @@ export default class User_profile extends Component {
     else {
       return (
         <Fragment>
-          <Redirect to="/Customer" />
+          <Redirect to="/" />
         </Fragment>
       )
     }
