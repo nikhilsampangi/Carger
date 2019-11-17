@@ -10,21 +10,21 @@ export const addpetrolstation = details => {
         petrolpumps: details.petrolpumps,
         dieselpumps: details.dieselpumps,
         cngpumps: details.cngpumps
-    })
-    .then(res => {
-        if(res.data.error) {
-            const check = {
-                error: res.data.error
+    }, { headers: { 'Authorization': details.token } })
+        .then(res => {
+            if (res.data.error) {
+                const check = {
+                    error: res.data.error
+                }
+                return check
             }
-            return check
-        }
-        else {
-            const check = {
-                data: res.data
+            else {
+                const check = {
+                    data: res.data
+                }
+                return check
             }
-            return check
-        }
-    })
+        })
 }
 
 export const register = newUser => {

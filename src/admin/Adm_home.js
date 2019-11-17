@@ -239,9 +239,7 @@ class UpdateOutletList extends Component {
           </button>
           :
           // Backend
-          <button className="btn btn-outline-dark btn-block btn-lg" onClick={() => this.setState({ addOutletSwitch: 0 }, () => {
-            AddOutletForm.prototype.handleSubmit();
-          })}>
+          <button className="btn btn-outline-dark btn-block btn-lg" onClick={() => this.setState({ addOutletSwitch: 0 })}>
             <i className="fas fa-save"></i>&nbsp;&nbsp;Save Changes
           </button>
         }
@@ -369,7 +367,7 @@ class AddOutletForm extends Component {
         cngPumps: this.state.cngPumps,
         token: Cookies.get('usertoken')
       }
-      console.log(outlet)
+      console.log(outlet.token)
       addpetrolstation(outlet)
         .then(res => {
           if (res.status) {
@@ -493,7 +491,7 @@ class AddOutletForm extends Component {
             <br />
             <div className="form-row">
               <div className="col"></div>
-              <button className="btn btn-outline-dark btn-block col-10" onClick={() => this.handleSubmit}>
+              <button className="btn btn-outline-dark btn-block col-10" onClick={this.handleSubmit}>
                 Submit
               </button>
               <div className="col"></div>
