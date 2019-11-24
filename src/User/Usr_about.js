@@ -22,6 +22,22 @@ export default class User_about extends Component {
             <div className="row">
             </div>
           </div>
+          <br />
+          <div className="row">
+            <div className="col"></div>
+            <div className="col-8">
+              Soad Group 7
+              <ul>
+                <li>Kevin John S20170010070</li>
+                <li>Moosa Mohamed S20170010096</li>
+                <li>Ajith Nagelli S20170010100</li>
+                <li>Prashant Raj S20170010111</li>
+                <li>Nikhil Sampangi S20170010136</li>
+                <li>Bharath Sandepogu S20170010137</li>
+              </ul>
+            </div>
+            <div className="col"></div>
+          </div>
         </div>
       )
     }

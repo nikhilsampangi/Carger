@@ -28,7 +28,6 @@ function send_mail(body, to_email) {
 }
 
 function send_verification_token(token, to_email) {
-
     link = "http://localhost:8008" + `/user/verify/${token}`;
     const body = "Hello,<br> Please Click on the link to verify your email.<br><a href=" + link + ">Click here to verify</a>"
     send_mail(body, to_email)
