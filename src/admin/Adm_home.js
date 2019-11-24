@@ -416,18 +416,18 @@ class AddOutletForm extends Component {
           New Outlet Enrollment
         </h3>
         <div className="card-body">
-          <form >
-            <div className="form-group">
-              <label for="formoutletname">Outlet Name</label>
-              <input type="text" id="formoutletname" class="form-control" value={this.state.outletName} name='outletName' onChange={this.handleChange} />
-            </div>
-            <br />
-            <div className="form-group">
-              <label for="formaddress">Address</label>
-              <input type="text" id="formaddress" class="form-control" value={this.state.outletAddress} name='outletAddress' onChange={this.handleChange} />
-            </div>
-            <br />
-            {/* <div className="form-group row" >
+
+          <div className="form-group">
+            <label for="formoutletname">Outlet Name</label>
+            <input type="text" id="formoutletname" class="form-control" value={this.state.outletName} name='outletName' onChange={this.handleChange} />
+          </div>
+          <br />
+          <div className="form-group">
+            <label for="formaddress">Address</label>
+            <input type="text" id="formaddress" class="form-control" value={this.state.outletAddress} name='outletAddress' onChange={this.handleChange} />
+          </div>
+          <br />
+          {/* <div className="form-group row" >
               <div className="col-2">Fuel Types </div>
               <div className="col-2">
                 {this.state.showd === 0 ?
@@ -475,28 +475,27 @@ class AddOutletForm extends Component {
                 }
               </div>
             </div> */}
-            <br />
-            <div className="form-row">
-              <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity" value={this.state.dieselCapacity} name='dieselCapacity' onChange={this.handleChange} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity" value={this.state.petrolCapacity} name='petrolCapacity' onChange={this.handleChange} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" value={this.state.cngCapacity} name='cngCapacity' onChange={this.handleChange} /></div>
-            </div>
-            <br />
-            <div className="form-row">
-              <div className="col">No of Pumps</div>
-              <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps" value={this.state.dieselPumps} name='dieselPumps' onChange={this.handleChange} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps" value={this.state.petrolPumps} name='petrolPumps' onChange={this.handleChange} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange} /></div>
-            </div>
-            <br />
-            <div className="form-row">
-              <div className="col"></div>
-              <button className="btn btn-outline-dark btn-block col-10" onClick={this.handleSubmit}>
-                Submit
+          <br />
+          <div className="form-row">
+            <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity" value={this.state.dieselCapacity} name='dieselCapacity' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity" value={this.state.petrolCapacity} name='petrolCapacity' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" value={this.state.cngCapacity} name='cngCapacity' onChange={this.handleChange} /></div>
+          </div>
+          <br />
+          <div className="form-row">
+            <div className="col">No of Pumps</div>
+            <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps" value={this.state.dieselPumps} name='dieselPumps' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps" value={this.state.petrolPumps} name='petrolPumps' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange} /></div>
+          </div>
+          <br />
+          <div className="form-row">
+            <div className="col"></div>
+            <button className="btn btn-outline-dark btn-block col-10" onClick={this.handleSubmit}>
+              Submit
               </button>
-              <div className="col"></div>
-            </div>
-          </form>
+            <div className="col"></div>
+          </div>
         </div>
       </div>
     )
