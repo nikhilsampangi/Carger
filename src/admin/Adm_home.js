@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo_v1.svg";
 import { ReactComponent as OutletImage } from "../assets/outlet.svg";
 import "./Adm_home.css";
+import Cookies from 'js-cookie';
+import '../authentication/adminFunctions';
+import { addpetrolstation } from '../authentication/adminFunctions';
+import Rating from '@prontopro/react-rating';
+import PumpStatistics from "../Staff/Stf_home"
 
 function change_bg(cls) {
   document
@@ -14,7 +19,9 @@ function change_bg(cls) {
 export default class Adm_home extends Component {
   constructor(props) {
     super(props);
-    this.state = { Tab: 1 }
+    this.state = {
+      Tab: 1
+    }
   }
 
   render() {
@@ -44,7 +51,7 @@ export default class Adm_home extends Component {
     }
     return (
       <div onLoad={change_bg("adminpages")} className="container-fluid">
-        <nav class="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow" style={{ "backgroundColor": "#1f262d" }}>
+        <nav className="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow" style={{ "backgroundColor": "#1f262d" }}>
           <Link to="/Admin_home">
             <Logo id="stfhmlogo" />
           </Link>
@@ -102,7 +109,7 @@ export default class Adm_home extends Component {
           </div>
         </div>
 
-      </div>
+      </div >
     )
   }
 }
@@ -110,22 +117,81 @@ export default class Adm_home extends Component {
 class OutletOverview extends Component {
   render() {
     return (
-      <div>
-        OutletOverview
-      </div>
+
+      <Fragment>
+        <div className="row">
+          <div className="col" />
+          <div className="col-9" style={{ "height": "45vh", "borderRadius": "20px", "backgroundColor": "white" }}>
+            <div className="container" style={{ "padding": "2%" }}>
+              <h3 style={{ "fontFamily": "josefin sans" }}><i className="fa fa-clipboard-list" />&nbsp;&nbsp;Outlet Statistics</h3>
+              <br />
+              <div className="form-group row">
+                <select className="form-control custom-select col-12">
+                  {/* Backend */}
+                  <option value="0">Select outlet</option>
+                  <option value="1">Outlet A</option>
+                  <option value="2">Outlet B</option>
+                  <option value="3">Outlet C</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="col" />
+        </div>
+        <br />
+      </Fragment>
     )
   }
 }
 class ScheduleDelivery extends Component {
   render() {
     return (
-      <div>
-        ScheduleDelivery
+      <div className="row">
+        <div className="col" />
+        <div className="col-9" style={{ "height": "45vh", "borderRadius": "20px", "backgroundColor": "white" }}>
+          <div className="container" style={{ "padding": "2%" }}>
+            <h2 style={{ "fontFamily": "josefin sans" }}><i className="fa fa-truck-moving" />&nbsp;&nbsp;Schedule Delivery</h2>
+            <br />
+            <form>
+              <div className="form-group row">
+                <label className="col-3">Select Outlet</label>
+                <select className="form-control custom-select col-7">
+                  {/* Backend */}
+                  <option value="0">Select outlet</option>
+                  <option value="1">Outlet A</option>
+                  <option value="2">Outlet B</option>
+                  <option value="3">Outlet C</option>
+                </select>
+                <div className="col" />
+              </div>
+              <div className="form-group row">
+                <label className="col-3">Choose Fuel Type</label>
+                <select className="form-control custom-select col-7">
+                  <option value="1">Diesel</option>
+                  <option value="2">Petrol</option>
+                  <option value="3">CNG</option>
+                </select>
+                <div className="col" />
+              </div>
+              <div className="form-group row">
+                <label className="col-3">Enter Quantity</label>
+                <input className="form-control col-7" type="text" placeholder="amount in litres" />
+              </div>
+              <div className="form-group row">
+                <div className="col-3" />
+                <div className="col-7">
+                  <button className="btn btn-outline-primary btn-block" type="submit">
+                    Deliver
+                </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="col" />
       </div>
     )
   }
-
-
 }
 class RevenueStatistics extends Component {
   render() {
@@ -135,14 +201,35 @@ class RevenueStatistics extends Component {
       </div>
     )
   }
-
-
 }
 class UpdateOutletList extends Component {
   constructor(props) {
     super(props);
     this.state = { addOutletSwitch: 0 }
   }
+
+  // handleSubmit(event) {
+  //   if(Cookies.get('usertoken')){
+  //     const state = this.props.state;
+  //     console.log(state)
+  //     const outlet= {
+  //         outletName: state.outletName,
+  //         outletAddress: state.outletAddress,
+  //         dieselCapacity: state.dieselCapacity,
+  //         petrolCapacity: state.petrolCapacity,
+  //         cngCapacity: state.cngCapacity,
+  //         petrolPumps: state.petrolPumps,
+  //         dieselPumps: state.dieselPumps,
+  //         cngPumps: state.cngPumps,
+  //         token: Cookies.get('usertoken')
+  //     }
+  //     console.log(outlet);
+  //   } 
+  //   else{
+  //     console.log('please login');
+  //   }
+  // }
+
   render() {
     return (
       <div className="container-fluid">
@@ -256,8 +343,72 @@ class Outlet extends Component {
 class AddOutletForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { showd: 0, showp: 0, showc: 0 }
+    this.state = { showd: 0, showp: 0, showc: 0, outletName: '', outletAddress: '', dieselCapacity: '', petrolCapacity: '', cngCapacity: '', petrolPumps: '', dieselPumps: '', cngPumps: '' };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value }, () => {
+      console.log(this.state);
+    });
+  }
+
+  handleSubmit(event) {
+    if (Cookies.get('usertoken')) {
+      const outlet = {
+        outletName: this.state.outletName,
+        outletAddress: this.state.outletAddress,
+        dieselCapacity: this.state.dieselCapacity,
+        petrolCapacity: this.state.petrolCapacity,
+        cngCapacity: this.state.cngCapacity,
+        petrolPumps: this.state.petrolPumps,
+        dieselPumps: this.state.dieselPumps,
+        cngPumps: this.state.cngPumps,
+        token: Cookies.get('usertoken')
+      }
+      console.log(outlet.token)
+      addpetrolstation(outlet)
+        .then(res => {
+          if (res.status) {
+            // this.props.history.push('/')
+            console.log(res.data)
+            // this.setState({authenticated:true})
+          }
+          else {
+            console.log(res.error)
+          }
+        })
+        .catch(err => {
+          console.log('error:-' + err)
+        })
+
+    }
+    else {
+      console.log('please login')
+    }
+
+
+    // login(user)
+    //   .then(res => {
+    //     if (res.status) {
+    //       // this.props.history.push('/')
+    //       this.setState({ authenticated: 1 })
+    //       // console.log(res.data)
+    //     }
+    //     else {
+    //       this.setState({ errorFlag: true, errMsg: String(res.error) })
+    //       // console.log(res.error)
+
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log('error:-' + err)
+    //   })
+
+    event.preventDefault();
+  }
+
   render() {
     return (
       <div className="card container" style={{ "padding": "3%" }}>
@@ -265,19 +416,18 @@ class AddOutletForm extends Component {
           New Outlet Enrollment
         </h3>
         <div className="card-body">
-          <form>
-            <div className="form-group">
-              <label for="formoutletname">Outlet Name</label>
-              <input type="text" id="formoutletname" class="form-control" />
-            </div>
-            <br />
-            <div className="form-group">
-              <label for="formaddress">Address</label>
-              <input type="text" id="formaddress" class="form-control" />
-            </div>
-            <br />
 
-            <div className="form-group row" >
+          <div className="form-group">
+            <label for="formoutletname">Outlet Name</label>
+            <input type="text" id="formoutletname" class="form-control" value={this.state.outletName} name='outletName' onChange={this.handleChange} />
+          </div>
+          <br />
+          <div className="form-group">
+            <label for="formaddress">Address</label>
+            <input type="text" id="formaddress" class="form-control" value={this.state.outletAddress} name='outletAddress' onChange={this.handleChange} />
+          </div>
+          <br />
+          {/* <div className="form-group row" >
               <div className="col-2">Fuel Types </div>
               <div className="col-2">
                 {this.state.showd === 0 ?
@@ -324,21 +474,28 @@ class AddOutletForm extends Component {
                 </button>
                 }
               </div>
-            </div>
-            <br />
-            <div className="form-row">
-              <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity" disabled={!this.state.showd} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity" disabled={!this.state.showp} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" disabled={!this.state.showc} /></div>
-            </div>
-            <br />
-            <div className="form-row">
-              <div className="col">No of Pumps</div>
-              <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps" disabled={!this.state.showd} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps" disabled={!this.state.showp} /></div>
-              <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" disabled={!this.state.showc} /></div>
-            </div>
-          </form>
+            </div> */}
+          <br />
+          <div className="form-row">
+            <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity" value={this.state.dieselCapacity} name='dieselCapacity' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity" value={this.state.petrolCapacity} name='petrolCapacity' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" value={this.state.cngCapacity} name='cngCapacity' onChange={this.handleChange} /></div>
+          </div>
+          <br />
+          <div className="form-row">
+            <div className="col">No of Pumps</div>
+            <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps" value={this.state.dieselPumps} name='dieselPumps' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps" value={this.state.petrolPumps} name='petrolPumps' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange} /></div>
+          </div>
+          <br />
+          <div className="form-row">
+            <div className="col"></div>
+            <button className="btn btn-outline-dark btn-block col-10" onClick={this.handleSubmit}>
+              Submit
+              </button>
+            <div className="col"></div>
+          </div>
         </div>
       </div>
     )
@@ -349,7 +506,43 @@ class CustomerFeedback extends Component {
   render() {
     return (
       <div>
-        CustomerFeedback
+        <div className="row">
+          <div className="col" />
+          <div className="col-10" style={{ "height": "45vh", "borderRadius": "20px", "backgroundColor": "white" }}>
+            <div className="container" style={{ "padding": "3%" }}>
+              <div className="row" style={{ "textAlign": "center", "fontFamily": "josefin sans", "fontSize": "1.4em" }}>
+                <div className="col">
+                  <i className="fa fa-user" />&nbsp;&nbsp;Customer Name
+              </div>
+                <div className="col">
+                  <i className="fa fa-clipboard-list" />&nbsp;&nbsp;Transaction Details
+              </div>
+                <div className="col">
+                  <i className="fa fa-clock" />&nbsp;&nbsp;Transaction Time
+              </div>
+              </div>
+              <br />
+              <div className="row">
+                <div className="col"></div>
+                <div className="col-10">
+                  <div className="card">
+                    <div className="card-header">
+                      Rating : 4/5 <Rating animateOnHover={true} initialRate={4} readonly={true} />
+                    </div>
+                    <div className="card-body">
+                      <h2 className="card-title">Feedback:</h2>
+                      <p className="card-text">
+                        " backend:send feedback (if exsists) here "
+                    </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col"></div>
+              </div>
+            </div>
+          </div>
+          <div className="col" />
+        </div>
       </div>
     )
   }

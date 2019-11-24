@@ -8,7 +8,9 @@ const randomToken = require('random-token');
 
 const User = require('../models/user.model');
 
-const email = require('./send_email')
+const email = require('./send_email');
+
+const transaction = require('./transaction')
 
 router.use(cors());
 
@@ -25,7 +27,6 @@ function register(req, res) {
     email: req.body.email,
     gender: req.body.gender
   }
-
   User.findOne({
     email: req.body.email
   })
@@ -57,7 +58,7 @@ function register(req, res) {
                   console.log('error:' + err.message)
                 });
 
-              res.json({ status: "registered and a link is sent to your to get your email verified" });
+              res.json({ status: "registered and a link is sent to your email to get your email verified" });
             })
 
             .catch(err => {
@@ -67,7 +68,7 @@ function register(req, res) {
                 errors.push(err['errors'][arr[i]].message);
               }
               console.log(errors)
-              res.json({ error: errors[0] });
+              res.json({ error: errors });
             })
         })
       }
@@ -84,6 +85,7 @@ function register(req, res) {
       console.log(errors)
       res.json({ error: errors });
     })
+
 
 }
 
@@ -105,7 +107,7 @@ function login(req, res) {
           }
           let token = jwt.sign(payload, process.SECRET_KEY, {
             algorithm: 'HS256',
-            expiresIn: 1440
+            expiresIn: 86400
           })
           res.send(token)
         } else {
@@ -143,6 +145,7 @@ function profile(req, res) {
     });
 
 }
+
 
 router.delete('/delete', delete_user)
 
@@ -201,16 +204,118 @@ function confirm_email(req, res) {
   }, newValues)
     .then(user => {
       if (user) {
-        res.send("verified")
+        res.redirect('http://localhost:3000/#/Email_Verification/1')
       }
       else {
         res.json({ error: "not verified" })
+        res.redirect('http://localhost:3000/#/Email_Verification/0')
       }
     })
     .catch(err => {
       res.json('error:' + err)
+      res.redirect('http://localhost:3000/#/Email_Verification/0')
     });
 
+}
+
+router.post('/add_money_to_wallet', auth, add_money)
+
+function add_money(req, res) {
+  transaction.pay(req.body, function (err, payment) {
+    if (err) {
+      console.log(err)
+    }
+    else {
+
+      for (let i = 0; i < payment.links.length; i++) {
+        if (payment.links[i].rel === 'approval_url') {
+          res.json({ link: payment.links[i].href })
+        }
+      }
+
+      const newValues = {
+        $push: {
+          eWalletTransactions: {
+            transactionId: payment.id,
+            status: 'initiated',
+            type: 'credit',
+            createdAt: payment.create_time,
+            amount: req.body.amount
+          }
+        }
+      }
+
+
+      User.updateOne({
+        _id: req.user._id
+      }, newValues)
+        .then(add => {
+          if (add) {
+            console.log("transaction added!!!")
+          }
+          else {
+            console.log("transaction not added")
+          }
+        })
+        .catch(err => {
+          console.log({ error: err })
+        })
+
+    }
+
+  });
+}
+
+router.get('/success', success)
+
+function success(req, res) {
+  const data = {
+    payerId: req.query.PayerID,
+    paymentId: req.query.paymentId,
+  }
+
+  transaction.success(data, function (err, response) {
+    console.log(response)
+    if (err) {
+      console.log(err)
+      res.send(err)
+    }
+    else {
+      const newValues = {
+        $set: {
+          "eWalletTransactions.$.status": "completed",
+          "eWalletTransactions.$.updatedAt": response.update_time
+        }
+      }
+      User.updateOne({
+        "eWalletTransactions.transactionId": response.id
+      }, newValues)
+        .then(user => {
+          console.log(user)
+          const data = {
+            _id: response.id,
+            type: 'credit',
+            amount: response.transactions[0].amount.total
+          }
+
+          transaction.update_balance(data)
+
+          res.redirect('http://localhost:3000/#/User_Wallet_Success')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  })
+
+}
+
+
+router.get('/cancel', cancel)
+
+function cancel(req, res) {
+  console.log(req.query);
+  res.send('Cancelled');
 }
 
 
