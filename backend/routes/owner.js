@@ -14,7 +14,65 @@ router.use(cors());
 
 process.SECRET_KEY = 'secret';
 
-router.post('/register', register_admin)
+router.post('/addsuperuser', addSuperUser)
+
+function addSuperUser(req, res) {
+  const admin_data = {
+    name: req.body.username,
+    hashedPassword: req.body.hashedPassword,
+    email: req.body.email,
+    isAdmin: true
+  };
+
+  bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
+    admin_data.hashedPassword = hash;
+    Admin.create(admin_data)
+      .then(user => {
+
+        const gen_token = randomToken(55);
+
+        // email.send_verification_token(gen_token, user.email);
+
+        var newValues = {
+          $set: {
+            token: gen_token
+          }
+        };
+
+        Admin.updateOne({
+          _id: user._id
+        }, newValues)
+          .then(user => {
+            if (user) {
+              console.log("updated token")
+            } else {
+              console.log({
+                error: "token not updated"
+              })
+            }
+          })
+          .catch(err => {
+            console.log('error:' + err.message)
+          });
+
+        res.json({
+          status: "registered"
+        });
+      })
+
+      .catch(err => {
+        var arr = Object.keys(err['errors'])
+        var errors = []
+        for (i in arr) {
+          errors.push(err['errors'][arr[i]].message);
+        }
+        console.log(errors)
+        res.json({error: errors})
+      })
+    console.log(admin_data)
+  })
+}  
+
 
 // function createSuperUser() {
 //     Admin.findOne({
@@ -101,65 +159,7 @@ router.post('/register', register_admin)
 //     })
 // }
 
-// router.post('/addsuperuser', addSuperUser);
-
-// function addSuperUser(req, res) {
-//   const admin_data = {
-//     name: req.body.username,
-//     hashedPassword: req.body.hashedPassword,
-//     email: req.body.email,
-//     isAdmin: true
-//   }
-//   bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
-//     admin_data.hashedPassword = hash;
-//     Admin.create(admin_data)
-//       .then(user => {
-
-//         const gen_token = randomToken(55);
-
-//         // email.send_verification_token(gen_token, user.email);
-
-//         var newValues = {
-//           $set: {
-//             token: gen_token
-//           }
-//         };
-
-//         Admin.updateOne({
-//           _id: user._id
-//         }, newValues)
-//           .then(user => {
-//             if (user) {
-//               console.log("updated token")
-//             } else {
-//               console.log({
-//                 error: "token not updated"
-//               })
-//             }
-//           })
-//           .catch(err => {
-//             console.log('error:' + err.message)
-//           });
-
-//         res.json({
-//           status: "registered"
-//         });
-//       })
-
-//       .catch(err => {
-//         var arr = Object.keys(err['errors'])
-//         var errors = []
-//         for (i in arr) {
-//           errors.push(err['errors'][arr[i]].message);
-//         }
-//         console.log(errors)
-//         res.json({
-//           error: errors
-//         });
-//       })
-
-//     console.log(admin_data)
-//   }
+router.post('/register',auth, register_admin)
 
 function register_admin(req, res) {
   const admin_data = {
@@ -169,7 +169,7 @@ function register_admin(req, res) {
   }
 
   Admin.findOne({
-    name: req.body.superAdmin,
+    email: req.user.email,
     isAdmin: true
   })
     .then(super_admin => {
@@ -230,7 +230,7 @@ function register_admin(req, res) {
                 console.log(admin_data)
               })
             } else {
-              console.log('admin exist')
+              res.send('admin exist')
             }
           })
           .catch(err => {
@@ -239,7 +239,7 @@ function register_admin(req, res) {
             })
           })
       } else {
-        console.log({
+        res.send({
           error: "super admin not found"
         })
       }
@@ -250,6 +250,7 @@ function register_admin(req, res) {
       })
     })
 }
+
 
 router.post('/login', login)
 
@@ -292,12 +293,12 @@ router.post('/addstation', auth, addStation)
 
 function addStation(req, res) {
   // send dieselpumps, petrolpumps, cngpumps
-  const petrolstationdata = {
-    name: req.body.name,
-    fuelDetails: req.body.fuelDetails,
-    address: req.body.address,
-    pumps: []
-  }
+  // const petrolstationdata = {
+  //   name: req.body.name,
+  //   fuelDetails: req.body.fuelDetails,
+  //   address: req.body.address,
+  //   pumps: []
+  // }
 
 
   // res.send('done')
@@ -314,20 +315,32 @@ function addStation(req, res) {
         })
           .then(petrol => {
             if (!petrol) {
-              tempid = 0
-              let fueltype = ["Petrol", "Diesel", "CNG"];
-              let pumpcount = [req.body.petrolpumps, req.body.dieselpumps, req.body.cngpumps];
-              for (i = 0; i < pumpcount.length; i++) {
-                while (pumpcount[i]--) {
-                  var p = {
-                    customid: tempid++,
-                    pumptype: fueltype[i]
-                  }
-                  petrolstationdata.pumps.push(p)
+              // tempid = 0
+              // let fueltype = ["Petrol", "Diesel", "CNG"];
+              // let pumpcount = [req.body.petrolpumps, req.body.dieselpumps, req.body.cngpumps];
+              // for (i = 0; i < pumpcount.length; i++) {
+              //   while (pumpcount[i]--) {
+              //     var p = {
+              //       customid: tempid++,
+              //       pumptype: fueltype[i]
+              //     }
+              //     petrolstationdata.pumps.push(p)
+              //   }
+              // }
+
+              
+
+              PetrolStation.create(
+                {
+                  name: req.body.name,
+                  address: req.body.address,
+                  fuelDetails: {fuel: req.body.fuel, quantity: req.body.quantity, price: req.body.price},
+                  pumps:{customid: req.body.customid, pumptype:req.body.pumptype}
                 }
-              }
-              console.log(petrolstationdata)
-              PetrolStation.create(petrolstationdata)
+              ).then(response=>{
+                console.log(response);
+                res.send(response)
+              })
               res.send('Petrol Station added')
             } else {
               res.json({

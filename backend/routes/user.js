@@ -7,6 +7,7 @@ const auth = require('./middleware_jwt');
 const randomToken = require('random-token');
 
 const User = require('../models/user.model');
+const PetrolStation = require('../models/petrolStation.model')
 
 const email = require('./send_email');
 
@@ -317,6 +318,22 @@ function cancel(req, res) {
   console.log(req.query);
   res.send('Cancelled');
 }
+
+
+router.post('/buy_fuel', auth, buy_fuel)
+
+function buy_fuel(req, res){
+      
+      User.findOne({
+        email:req.user.email
+      })
+      .then(user=>{
+        if(user){
+          
+        }
+      })
+}
+
 
 
 module.exports = router;    

@@ -6,6 +6,9 @@ const app= express();
 const port= 8008;
 const paypal= require('paypal-rest-sdk');
 
+const cronJob= require('./time_schedule/cancel_order');
+
+
 app.use(cors());
 
 paypal.configure({
@@ -21,6 +24,7 @@ paypal.configure({
 mongoose.connect('mongodb://localhost:27017/cargerdb', {useNewUrlParser: true});
 
 mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 const connection = mongoose.connection;
 
@@ -28,8 +32,12 @@ connection.once('open', function(){
     console.log("connected");
 });
 
+// cronJob();
+
+
 const route = require('./routes/user');
 const adminroutes = require('./routes/owner');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/user', route);
