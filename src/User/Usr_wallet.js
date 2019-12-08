@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Link, Redirect } from "react-router-dom";
 import Navbar from "./Navbar";
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
+import { ReactComponent as Wallet } from '../assets/wallet.svg';
 import { pay } from '../authentication/userFunctions';
 import Cookies from 'js-cookie';
 import Modal from 'react-responsive-modal';
@@ -81,36 +82,25 @@ export default class Usr_wallet extends Component {
             <div className="row">
               <div className="col-6" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
                 <h2>Add Money to Wallet</h2>
-              </div>
-              <div className="col-6" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
-                <h2>Wallet Balance</h2>
-              </div>
-            </div>
-            <br />
-            <br />
-            <br />
-            <br />
-            <div className="row">
-              <div className="col">
-                <div className="input-group row">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">
-                      {/* Amount /- */}
-                      <div className="d-flex justify-content-end">
+                <br /><br /><br />
+                <span style={{ "fontSize": "3em" }}>
+                  {/* Amount /- */}
+                  <div className="d-flex justify-content-center">
+                    <span >
+                      <i className="fa fa-money-bill-wave" />
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
                         <span >
-                          <i className="fa fa-money-bill-wave" />
-                        </span>
-                        &nbsp;&nbsp;&nbsp;
+                      <i className="fa fa-angle-double-right" />
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
                         <span >
-                          <i className="fa fa-angle-double-right" />
-                        </span>
-                        &nbsp;&nbsp;&nbsp;
-                        <span >
-                          <i className="fa fa-coins" />
-                        </span>
-                      </div>
+                      <i className="fa fa-coins" />
                     </span>
                   </div>
+                </span>
+                <div className="input-group row">
+
                   <input type="text" className="form-control" placeholder="00.00" name="amount" value={this.state.amount} onChange={this.handleChange} />
                   {/*             
                     <div className="input-group-prepend">
@@ -122,11 +112,19 @@ export default class Usr_wallet extends Component {
                   <button className="btn btn-outline-dark btn-block" onClick={this.handleSubmit}>Add Money</button>
                 </div>
               </div>
-              <div className="col">
-
+              <div className="col-6" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+                <h2>Wallet Balance</h2>
+                <br />
+                <div style={{ "textAlign": "center" }}>
+                  <Wallet style={{ "height": "35vh" }} />
+                  &nbsp;&nbsp;&nbsp;
+                  <span style={{ "fontSize": "3em" }}>
+                    :&nbsp;69
+                    {/* &nbsp;&nbsp;<i className="fa fa-coins" /> */}
+                  </span>
+                </div>
               </div>
             </div>
-
           </div>
         </div >
       )

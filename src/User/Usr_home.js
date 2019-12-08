@@ -69,6 +69,7 @@ export default class Usr_home extends Component {
                 </ul>
               </div>
             </div>
+            <br /><br /><br />
           </div>
         </div>
 
