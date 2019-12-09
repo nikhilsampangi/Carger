@@ -1,7 +1,6 @@
 const express = require('express');
-const router = express.Router();
-const cors = require('cors');
 const paypal = require('paypal-rest-sdk');
+const User= require('../models/user.model');
 
 router.post('/pay', pay)
 
@@ -12,75 +11,123 @@ function pay(req, res) {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:8008/transaction/success",
-            "cancel_url": "http://localhost:8008/transaction/cancel"
+            "return_url": "http://localhost:8008/user/success",
+            "cancel_url": "http://localhost:8008/user/cancel"
         },
         "transactions": [{
             "item_list": {
                 "items": [{
-                    "name": "Red Sox Hat",
+                    "name": "CARGER Ewallet",
                     "sku": "001",
-                    "price": "25.00",
+                    "price": details.amount,
                     "currency": "USD",
                     "quantity": 1
                 }]
             },
             "amount": {
                 "currency": "USD",
-                "total": "25.00"
+                "total": details.amount,
             },
             "description": "Hat for the best team ever"
         }]
     };
 
+    console.log(details.amount)
 
     paypal.payment.create(create_payment_json, function (error, payment) {
-        if (error) {
-            throw error;
-        } else {
-            for(let i = 0; i < payment.links.length; i++){
-              if(payment.links[i].rel === 'approval_url'){
-                  console.log(payment)
-                res.redirect(payment.links[i].href);
-              }
-            }
-        }
+       callback(error, payment)            
       });
 }
 
+function success(data, callback){
 
-router.get('/success', success)
+    User.findOne({
+        "eWalletTransactions.transactionId": data.paymentId 
+      })
+      .then(user => {
+         for(let i=0; i<user.eWalletTransactions.length; i++){
+           if(user.eWalletTransactions[i].transactionId === data.paymentId){
+                
+                let final_amount = user.eWalletTransactions[i].amount
+                
+                const execute_payment_json = {
+                    "payer_id": data.payerId,
+                    "transactions": [{
+                        "amount": {
+                            "currency": "USD",
+                            "total": final_amount
+                        }
+                    }]
+                };
+            
+                paypal.payment.execute(data.paymentId, execute_payment_json, function (error, payment) {
+                 callback(error, payment)
+                });
+           }
+         } 
+      }).catch(err=>{
+        console.log(err)
+        callback({error: err})
+      })
+    
+}
 
-function success(req, res) {
-    const payerId = req.query.PayerID;
-  const paymentId = req.query.paymentId;
-
-  const execute_payment_json = {
-    "payer_id": payerId,
-    "transactions": [{
-        "amount": {
-            "currency": "USD",
-            "total": "25.00"
+function update_balance(data){
+    
+    User.findOne({
+       "eWalletTransactions.transactionId": data._id
+    })
+    .then(user=>{
+        if(!user){
+            console.log("no user exist")
         }
-    }]
-  };
+        else{
+            if(data.type === 'credit'){
+                let init_balance = parseFloat(user.balance);
+                let total= String(parseFloat(data.amount) + init_balance);
+                console.log(total, init_balance, data.amount)
+                
+                const newValues={
+                    $set:{
+                        balance: total
+                    }
+                }
 
-  paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
-    if (error) {
-        console.log(error.response);
-        throw error;
-    } else {
-        console.log(JSON.stringify(payment));
-        res.send('Success');
-    }
-});
+                User.updateOne({
+                    _id: user._id
+                }, newValues)
+                .then(user=>{
+                    console.log(user)
+                })
+                .catch(err=>{
+                    console.log(err)
+                })
+            console.log(newValues)
+            }
+            else if(data.type === 'debit'){
+                let init_balance = parseFloat(user.balance);
+                let total= init_balance - parseFloat(data.amount) ;
+                console.log(total)
+                
+                const newValues={
+                    $set:{
+                        balance: toString(total)
+                    }
+                }
+
+            }
+
+            else{
+                console.log("error")
+            }
+
+
+            
+        }
+    })
+
 }
 
 
-router.get('/cancel', cancel)
 
-function cancel(req, res) {
-    res.send('Cancelled');
-}
-
-module.exports= router;
+module.exports= {pay, success, update_balance}
