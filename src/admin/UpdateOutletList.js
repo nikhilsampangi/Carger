@@ -277,6 +277,7 @@ class AddOutletForm extends Component {
             </div> */}
           <br />
           <div className="form-row">
+            <div className="col">Capacities</div>
             <div className="col"><input type="text" className="form-control" placeholder="Diesel Tank Capacity" value={this.state.dieselCapacity} name='dieselCapacity' onChange={this.handleChange} /></div>
             <div className="col"><input type="text" className="form-control" placeholder="Petrol Tank Capacity" value={this.state.petrolCapacity} name='petrolCapacity' onChange={this.handleChange} /></div>
             <div className="col"><input type="text" className="form-control" placeholder="CNG Tank Capacity" value={this.state.cngCapacity} name='cngCapacity' onChange={this.handleChange} /></div>
@@ -287,6 +288,17 @@ class AddOutletForm extends Component {
             <div className="col"><input type="text" className="form-control" placeholder="Diesel Pumps" value={this.state.dieselPumps} name='dieselPumps' onChange={this.handleChange} /></div>
             <div className="col"><input type="text" className="form-control" placeholder="Petrol Pumps" value={this.state.petrolPumps} name='petrolPumps' onChange={this.handleChange} /></div>
             <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange} /></div>
+          </div>
+          <br />
+          <div className="form-row">
+            <div className="col">
+              <label>Manager's Username</label>
+              <input type="text" className="form-control" />
+            </div>
+            <div className="col">
+              <label>Manager's Password</label>
+              <input type="text" className="form-control" />
+            </div>
           </div>
           <br />
           <div className="form-row">
