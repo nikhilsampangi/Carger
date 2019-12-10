@@ -142,7 +142,7 @@ class Frequent_Outlets extends Component {
 class Outlet extends Component {
   render() {
     return (
-      <div className="row d-flex justify-content-between align-items-center">
+      <div className="row d-flex justify-content-between align-items-center" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
         {/* send through props */}
         outlet.name
           <span className="flex-row-reverse">
