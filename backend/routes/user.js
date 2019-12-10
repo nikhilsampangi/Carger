@@ -246,7 +246,6 @@ function add_money(req, res) {
         }
       }
 
-
       User.updateOne({
         _id: req.user._id
       }, newValues)
