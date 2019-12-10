@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+
 export const register = newUser => {
     return axios.post('user/register', {
         username: newUser.username,
@@ -51,3 +52,24 @@ export const login = user => {
             }
         })
 }
+
+export const pay= add_money=> {
+    return axios.post('user/add_money_to_wallet', {amount: add_money.amount}, {headers: {'Authorization': add_money.token}})
+    .then(res => {
+        if (res.data.error) {
+            const check = {
+                status: false,
+                error: res.data.error
+            }
+            return check
+        }
+        else {
+            const check = {
+                status: true,
+                data: res.data.link
+            }
+            return check
+        }
+    })
+}
+
