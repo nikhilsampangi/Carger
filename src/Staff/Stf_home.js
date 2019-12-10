@@ -28,7 +28,7 @@ export default class Stf_home extends Component {
   // }
   constructor(props) {
     super(props);
-    this.state = { Tab: 4 }
+    this.state = { Tab: 1 }
   }
   // componentDidMount() {
   //   this.refs.myComponentDiv.addEventListener('click', this.clickHandler);
