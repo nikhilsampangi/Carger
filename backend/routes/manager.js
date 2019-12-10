@@ -64,7 +64,7 @@ function register(req, res) {
                             })
                             .catch(err => {
                                 console.log('error:' + err.message)
-                                res.error(err)
+                                ressend(err)
                             });
 
                         res.json({status: "registed"});
@@ -76,7 +76,7 @@ function register(req, res) {
                               errors.push(err['errors'][arr[i]].message);
                             }
                             console.log(errors)
-                            res.error({error: errors});
+                            ressend({error: errors});
                           })
                     console.log(manager)
                     })
@@ -88,7 +88,7 @@ function register(req, res) {
             })
             .catch(err => {
                 console.log({error: err})
-                res.error(err)
+                ressend(err)
             })
         }
     })
@@ -123,94 +123,185 @@ function login(req, res) {
             }
           })
           .catch(err => {
-            res.error('error: ' + err)
+            res.send('error: ' + err)
     });
     
 }
     
-router.post('/shutdownstation', shutdownStation)
+router.post('/shutdownstation', auth, shutdownStation)
 
 function shutdownStation(req, res) {
-    PetrolPumps.findOne({
-        _id: req.body.pid
+    Manager.findOne({
+        email: req.body.email
     })
-    .then(petrolpumps => {
-        petrolpumps.emergencyShutdown = true
-        for (let index = 0; index < petrolpumps.pumps.length; index++) {
-            petrolpumps.pumps[index].shutdown = true;
+    .then(manager => {
+        if(manager) {        
+            PetrolPumps.findOne({
+                _id: req.body.pid
+            })
+            .then(petrolpumps => {
+                petrolpumps.emergencyShutdown = true
+                for (let index = 0; index < petrolpumps.pumps.length; index++) {
+                    petrolpumps.pumps[index].shutdown = true;
+                }
+                petrolpumps.save(function (err) {
+                    if(err) {
+                        res.send('Something went wrong!')
+                    }
+                    res.send("Updated")
+                })
+            })
+            .catch(err => {
+                res.send(err)
+            })
         }
-        petrolpumps.save(function (err) {
-            if(err) {
-                res.error('Something went wrong!')
-            }
-            res.send("Updated")
-        })
+    })
+    .catch(err => {
+        res.send(err)
     })
 }
 
-router.post('/startstation', startStation)
+router.post('/startstation', auth, startStation)
 
 function startStation(req, res) {
-    PetrolPumps.findOne({
-        _id: req.body.pid
+    Manager.findOne({
+        email: req.body.email
     })
-    .then(petrolpumps => {
-        petrolpumps.emergencyShutdown = false
-        for (let index = 0; index < petrolpumps.pumps.length; index++) {
-            petrolpumps.pumps[index].shutdown = false;
+    .then(manager => {
+        if(manager) {
+            PetrolPumps.findOne({
+                _id: req.body.pid
+            })
+            .then(petrolpumps => {
+                petrolpumps.emergencyShutdown = false
+                for (let index = 0; index < petrolpumps.pumps.length; index++) {
+                    petrolpumps.pumps[index].shutdown = false;
+                }
+                petrolpumps.save(function (err) {
+                    if(err) {
+                        res.send('Something went wrong!')
+                    }
+                    res.send("Updated")
+                })
+            })
+            .catch(err => {
+                res.send(err)
+            })
         }
-        petrolpumps.save(function (err) {
-            if(err) {
-                res.error('Something went wrong!')
-            }
-            res.send("Updated")
-        })
+    })
+    .catch(err => {
+        res.send(err)
     })
 }
 
 router.post('/shutdownpump', auth, shutdownPump)
 
 function shutdownPump(req, res) {
-    PetrolPumps.findOne({
-        _id: req.body.pid
+    Manager.findOne({
+        email: req.body.email
     })
-    .then(petrolpumps => {
-        for (let index = 0; index < petrolpumps.pumps.length; index++) {
-            if (petrolpumps.pumps[index].customid === req.body.customid) {
-                petrolpumps.pumps[index].shutdown = true
-            }
+    .then(manager => {
+        if(manager) {
+            PetrolPumps.findOne({
+                _id: req.body.pid
+            })
+            .then(petrolpumps => {
+                let customid = req.body.customid
+                petrolpumps.pumps[customid].shutdown = true
+                
+                petrolpumps.save(function (err) {
+                    if(err) {
+                        res.send('Something went wrong!')
+                    }
+                    res.send("Updated")
+                })
+            })
+            .catch(err => {
+                res.send(err)
+            })
         }
-        
-        petrolpumps.save(function (err) {
-            if(err) {
-                res.error('Something went wrong!')
-            }
-            res.send("Updated")
-        })
+    })
+    .catch(err => {
+        res.send(err)
     })
 }
 
-router.post('/startuppump', startupPump)
+router.post('/startuppump', auth, startupPump)
 
 
 function startupPump(req, res) {
-    PetrolPumps.findOne({
-        _id: req.body.pid
+    Manager.findOne({
+        email: req.body.email
     })
-    .then(petrolpumps => {
-        for (let index = 0; index < petrolpumps.pumps.length; index++) {
-            if (petrolpumps.pumps[index].customid === req.body.customid) {
-                petrolpumps.pumps[index].shutdown = true
-            }
+    .then(manager => {
+        if(manager) {
+            PetrolPumps.findOne({
+                _id: req.body.pid
+            })
+            .then(petrolpumps => {
+                let customid = req.body.customid
+                petrolpumps.pumps[customid].shutdown = false
+                petrolpumps.save(function (err) {
+                    if(err) {
+                        res.send('Something went wrong!')
+                    }
+                    res.send("Updated")
+                })
+            })
+            .catch(err => {
+                res.send(err)
+            })
         }
+    })
+    .catch(err => {
+        res.send(err)
+    })
+}
 
-        
-        petrolpumps.save(function (err) {
-            if(err) {
-                res.error('Something went wrong!')
-            }
-            res.send("Updated")
-        })
+router.post('/updatefueldetails', auth, updateFuelDetails)
+
+function updateFuelDetails(req, res) {
+    Manager.findOne({
+        email: req.body.email
+    })
+    .then(manager => {
+        // res.send('in update fuel details')
+        if(manager) {
+            // res.send('manager true')
+            PetrolPumps.findOne({
+                _id: req.body.pid
+            })
+            .then(petrolpumps => {
+                // res.send('petrolpumps true')
+                // res.send(petrolpumps)
+                for (let index = 0; index < petrolpumps.fuelDetails.length; index++) {
+                    // console.log(petrolpumps.fuelDetails[index].fuel)
+                    if(petrolpumps.fuelDetails[index].fuel==req.body.fuel) {
+                        // res.send(petrolpumps.fuelDetails[index].fuel)
+                        if(typeof req.body.quantity !== 'undefined'){
+                            petrolpumps.fuelDetails[index].quantity = req.body.quantity
+                        }
+                        if(typeof req.body.price !== 'undefined'){
+                            console.log('in price')
+                            petrolpumps.fuelDetails[index].price = req.body.price
+                        }
+                        break;
+                    }
+                }
+                petrolpumps.save(err => {
+                    if(err){
+                        res.send(err)
+                    }
+                    res.send('Updated')
+                })
+            })
+            .catch(err => {
+                res.send(err)
+            })
+        }
+    })
+    .catch(err => {
+        res.send(err)
     })
 }
 
