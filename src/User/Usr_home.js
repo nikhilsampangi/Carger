@@ -49,21 +49,21 @@ export default class Usr_home extends Component {
                     Diesel
                     <span className="flex-row-reverse">
                       {/* backend */}
-                      X per Litre
+                      <i className="fa fa-rupee-sign"></i>&nbsp;69.47 per Litre
                     </span>
                   </li>
                   <li className="list-group-item d-flex justify-content-between align-items-center">
                     Petrol
                     <span className="flex-row-reverse">
                       {/* backend */}
-                      X per Litre
+                      <i className="fa fa-rupee-sign"></i>&nbsp;77.89 per Litre
                     </span>
                   </li>
                   <li className="list-group-item d-flex justify-content-between align-items-center">
                     CNG
                     <span className="flex-row-reverse">
                       {/* backend */}
-                      X per Litre
+                      <i className="fa fa-rupee-sign"></i>&nbsp;64.92 per Litre
                     </span>
                   </li>
                 </ul>

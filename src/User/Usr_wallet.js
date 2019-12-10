@@ -112,18 +112,7 @@ export default class Usr_wallet extends Component {
                   <button className="btn btn-outline-dark btn-block" onClick={this.handleSubmit}>Add Money</button>
                 </div>
               </div>
-              <div className="col-6" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
-                <h2>Wallet Balance</h2>
-                <br />
-                <div style={{ "textAlign": "center" }}>
-                  <Wallet style={{ "height": "35vh" }} />
-                  &nbsp;&nbsp;&nbsp;
-                  <span style={{ "fontSize": "3em" }}>
-                    :&nbsp;69
-                    {/* &nbsp;&nbsp;<i className="fa fa-coins" /> */}
-                  </span>
-                </div>
-              </div>
+              <WalletBalance />
             </div>
           </div>
         </div >
@@ -136,5 +125,25 @@ export default class Usr_wallet extends Component {
         </Fragment>
       )
     }
+  }
+}
+
+class WalletBalance extends Component {
+  render() {
+    return (
+      <div className="col-6" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+        <h2>Wallet Balance</h2>
+        <br />
+        <div style={{ "textAlign": "center" }}>
+          <Wallet style={{ "height": "35vh" }} />
+          &nbsp;&nbsp;&nbsp;
+        <span style={{ "fontSize": "3em" }}>
+            :&nbsp;69
+          {/* &nbsp;&nbsp;<i className="fa fa-coins" /> */}
+          </span>
+        </div>
+      </div>
+
+    )
   }
 }

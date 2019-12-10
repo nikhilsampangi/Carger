@@ -7,6 +7,7 @@ const auth = require('./middleware_jwt');
 const randomToken = require('random-token');
 
 const User = require('../models/user.model');
+const Outlet = require('../models/petrolStation.model');
 
 const email = require('./send_email');
 
@@ -318,5 +319,17 @@ function cancel(req, res) {
   res.send('Cancelled');
 }
 
+router.get('/fuelQuantity', GetQuantity)
 
-module.exports = router;    
+function GetQuantity(req, res) {
+  Outlet.find({
+    name: req.body.name,
+  }).then(outlet => {
+    res.send(Outlet.address)
+  }
+  )
+}
+
+module.exports = router;
+
+

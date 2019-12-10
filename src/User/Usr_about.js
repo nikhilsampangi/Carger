@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import Navbar from "./Navbar"
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import Cookies from 'js-cookie';
+import { ReactComponent as Logo_sym } from "../assets/logo_symbol.svg";
 
 export default class User_about extends Component {
   render() {
@@ -19,24 +20,51 @@ export default class User_about extends Component {
               </div>
             </div>
             <br />
-            <div className="row">
+            <br />
+            <div className="row" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+              <div className="col"></div>
+              <div className="col-8">
+                <div className="row">
+                  <center><h1>SOAD Group 7</h1></center>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <div className="row"><i className="fa fa-user-alt"></i></div>
+                    <div className="row"><center>Kevin John</center></div>
+                    <div className="row">S20170010070</div>
+                  </div>
+                  <div className="col">
+                    <div className="row"><i className="fa fa-user-alt"></i></div>
+                    <div className="row">Moosa Mohamed</div>
+                    <div className="row">S20170010096</div>
+                  </div>
+                  <div className="col">
+                    <div className="row"><i className="fa fa-user-alt"></i></div>
+                    <div className="row">Ajith Nagelli</div>
+                    <div className="row">S20170010100</div>
+                  </div>
+                </div>
+                <br />
+                <div className="row">
+                  <div className="col">
+                    <div className="row"><i className="fa fa-user-alt"></i></div>
+                    <div className="row">Prashant Raj</div>
+                    <div className="row">S20170010111</div>
+                  </div>
+                  <div className="col">
+                    <div className="row"><i className="fa fa-user-alt"></i></div>
+                    <div className="row">Nikhil Sampangi</div>
+                    <div className="row">S20170010136</div>
+                  </div>
+                  <div className="col">
+                    <div className="row"><i className="fa fa-user-alt"></i></div>
+                    <div className="row">Bharath Sandepogu</div>
+                    <div className="row">S20170010137</div>
+                  </div>
+                </div>
+              </div>
+              <div className="col"></div>
             </div>
-          </div>
-          <br />
-          <div className="row">
-            <div className="col"></div>
-            <div className="col-8">
-              Soad Group 7
-              <ul>
-                <li>Kevin John S20170010070</li>
-                <li>Moosa Mohamed S20170010096</li>
-                <li>Ajith Nagelli S20170010100</li>
-                <li>Prashant Raj S20170010111</li>
-                <li>Nikhil Sampangi S20170010136</li>
-                <li>Bharath Sandepogu S20170010137</li>
-              </ul>
-            </div>
-            <div className="col"></div>
           </div>
         </div>
       )
