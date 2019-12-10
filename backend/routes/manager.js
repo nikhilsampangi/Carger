@@ -8,6 +8,7 @@ const randomToken = require('random-token');
 
 const Manager = require('../models/manager.model')
 const Admin = require("../models/owner.model")
+const PetrolPumps = require('../models/petrolStation.model')
 
 const email = require('./send_email')
 
@@ -16,6 +17,7 @@ router.use(cors());
 process.SECRET_KEY = 'secret';
 
 router.post('/register', register)
+// router.post('/register', auth, register)
 
 function register(req, res) {
     const managerData = {
@@ -30,9 +32,10 @@ function register(req, res) {
             pAddress: req.body.pAddress
         }
     }
-
+    // res.send('IN manaer')
     Admin.findOne({
-        email: req.body.adminEmail
+        email: req.body.adminEmail,
+        // token: req.body.token
     })
     .then(admin => {
         if(admin) {
@@ -61,6 +64,7 @@ function register(req, res) {
                             })
                             .catch(err => {
                                 console.log('error:' + err.message)
+                                res.error(err)
                             });
 
                         res.json({status: "registed"});
@@ -72,17 +76,19 @@ function register(req, res) {
                               errors.push(err['errors'][arr[i]].message);
                             }
                             console.log(errors)
-                            res.json({error: errors});
+                            res.error({error: errors});
                           })
                     console.log(manager)
                     })
                 }
                 else {
-                    console.log('manager exist')
+                    console.log('manager exists')
+                    res.send('Manager exists')
                 }
             })
             .catch(err => {
                 console.log({error: err})
+                res.error(err)
             })
         }
     })
@@ -106,6 +112,7 @@ function login(req, res) {
                   algorithm: 'HS256',
                   expiresIn: 1440
                 })
+                Manager.update()
                 res.send(token)
               } else {
                 // Passwords don't match
@@ -116,10 +123,96 @@ function login(req, res) {
             }
           })
           .catch(err => {
-            res.send('error: ' + err)
+            res.error('error: ' + err)
     });
     
 }
     
+router.post('/shutdownstation', shutdownStation)
+
+function shutdownStation(req, res) {
+    PetrolPumps.findOne({
+        _id: req.body.pid
+    })
+    .then(petrolpumps => {
+        petrolpumps.emergencyShutdown = true
+        for (let index = 0; index < petrolpumps.pumps.length; index++) {
+            petrolpumps.pumps[index].shutdown = true;
+        }
+        petrolpumps.save(function (err) {
+            if(err) {
+                res.error('Something went wrong!')
+            }
+            res.send("Updated")
+        })
+    })
+}
+
+router.post('/startstation', startStation)
+
+function startStation(req, res) {
+    PetrolPumps.findOne({
+        _id: req.body.pid
+    })
+    .then(petrolpumps => {
+        petrolpumps.emergencyShutdown = false
+        for (let index = 0; index < petrolpumps.pumps.length; index++) {
+            petrolpumps.pumps[index].shutdown = false;
+        }
+        petrolpumps.save(function (err) {
+            if(err) {
+                res.error('Something went wrong!')
+            }
+            res.send("Updated")
+        })
+    })
+}
+
+router.post('/shutdownpump', auth, shutdownPump)
+
+function shutdownPump(req, res) {
+    PetrolPumps.findOne({
+        _id: req.body.pid
+    })
+    .then(petrolpumps => {
+        for (let index = 0; index < petrolpumps.pumps.length; index++) {
+            if (petrolpumps.pumps[index].customid === req.body.customid) {
+                petrolpumps.pumps[index].shutdown = true
+            }
+        }
+        
+        petrolpumps.save(function (err) {
+            if(err) {
+                res.error('Something went wrong!')
+            }
+            res.send("Updated")
+        })
+    })
+}
+
+router.post('/startuppump', startupPump)
+
+
+function startupPump(req, res) {
+    PetrolPumps.findOne({
+        _id: req.body.pid
+    })
+    .then(petrolpumps => {
+        for (let index = 0; index < petrolpumps.pumps.length; index++) {
+            if (petrolpumps.pumps[index].customid === req.body.customid) {
+                petrolpumps.pumps[index].shutdown = true
+            }
+        }
+
+        
+        petrolpumps.save(function (err) {
+            if(err) {
+                res.error('Something went wrong!')
+            }
+            res.send("Updated")
+        })
+    })
+}
+
 // router.post('/addpumps/')
 module.exports = router;
