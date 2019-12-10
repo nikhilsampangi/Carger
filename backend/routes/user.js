@@ -318,6 +318,19 @@ function cancel(req, res) {
   res.send('Cancelled');
 }
 
+router.get('/fuelQuantity', GetQuantity)
+
+function GetQuantity(req, res) {
+  Outlet.find({
+    name: req.body.name,
+  }).then(outlet => {
+    res.send(Outlet.address)
+  }
+  )
+}
+
+module.exports = router;
+
 
 router.post('/buy_fuel', auth, buy_fuel)
 
