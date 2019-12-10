@@ -12,6 +12,8 @@ const email = require('./send_email');
 
 const transaction = require('./transaction')
 
+const Pump = require('../models/petrolStation.model');
+
 router.use(cors());
 
 process.SECRET_KEY = 'secret';
@@ -312,9 +314,105 @@ function success(req, res) {
 router.get('/cancel', cancel)
 
 function cancel(req, res) {
-    console.log(req.query);
-    res.send('Cancelled');
+  console.log(req.query);
+  res.send('Cancelled');
 }
 
 
-module.exports = router;    
+router.get('/gas_trans', auth, gas_trans)
+
+function gas_trans(req, res) {
+  Pump.findOne({
+    pid: req.body.pid
+  })
+    .then(pump =>{
+      if(pump){
+        var cost_pl = 0
+        var pump_quan = 0
+        for(let i = 0; i < pump.fuelDetails.length; i++){
+          if(pump.fuelDetails[i].fuel === req.body.type){   
+            cost_pl = pump.fuelDetails[i].price
+            pump_quan = pump.fuelDetails[i].quantity
+          }
+        }
+        if(req.body.quantity < pump_quan){
+          User.findOne({
+            _id: req.user._id
+          })
+            .then(user =>{
+              if(user){
+                if(user.balance > req.body.total){
+                  total_cost = cost_pl * req.body.quantity
+                  if(total_cost == req.body.total){
+                    var x = parseFloat(user.balance) - total_cost
+                    const newVal={
+                      $set:{
+                          balance: x
+                      }
+                    }
+                    User.updateOne({
+                      _id: user._id
+                    }, newVal)
+                      .then(y =>{
+                        if(y.ok == 1){
+                          var tid = Math.random().toString(36).substr(2, 9);
+                    const newValues= {
+                      $push:{
+                        eWalletTransactions: {
+                          transactionId: tid,
+                          status: 'completed',
+                          type: 'debit',
+                          createdAt: Date.now,
+                          amount: total_cost
+                        }
+                      }
+                    }
+                    User.updateOne({
+                      _id: req.user._id
+                    }, newValues)
+                    var gid = Math.random().toString(36).substr(2, 9);
+                    const n= {
+                      $push:{
+                        gasTransactions: {
+                          transactionId: gid,
+                          fuelType: req.body.type,
+                          fuelPrice: cost_pl,
+                          quantity: req.body.quantity,
+                          cost: total_cost,
+                          status: 'initiated',
+                          pId: req.body.pid,
+                          createdAt: Date.now,
+                          eWalletTransactionId: tid
+                        }
+                      }
+                    }
+                    User.updateOne({
+                      _id: req.user._id
+                    }, n)
+                        }
+                      })
+                  }
+                  else{
+                    res.send('Access Denied')
+                  }
+                }
+                else{
+                  res.send('Not enough wallet balance.Please add money to wallet')
+                }
+              }
+            })
+            .catch(err=>{
+              res.json({error:err})
+            })
+          } 
+        else{
+          res.send('Not enough fuel in this outlet')
+        }
+      }
+    })
+    .catch(err=>{
+      res.json({error:err})
+    })
+}
+
+module.exports = router;

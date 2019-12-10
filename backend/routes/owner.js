@@ -207,7 +207,80 @@ function login(req, res) {
       .catch(err => {
         res.send('error: ' + err)
       });
+}
 
+
+router.post('/addstation', auth, addStation)
+
+function addStation(req, res) {
+  // send dieselpumps, petrolpumps, cngpumps
+  const petrolstationdata = {
+    name: req.body.name,
+    fuelDetails: req.body.fuelDetails,
+    address: req.body.address,
+    pumps: []
+  }
+
+
+  // res.send('done')
+
+  // res.body.fuelDetails is array of objects
+
+  Admin.findOne({
+    email: req.user.email
+  })
+    .then(admin => {
+      if (admin) {
+        PetrolStation.findOne({
+          name: req.body.name
+        })
+          .then(petrol => {
+            if (!petrol) {
+              tempid = 0
+              let fueltype = ["Petrol", "Diesel", "CNG"];
+              let pumpcount = [req.body.petrolpumps, req.body.dieselpumps, req.body.cngpumps];
+              for (i = 0; i < pumpcount.length; i++) {
+                while (pumpcount[i]--) {
+                  var p = {
+                    customid: tempid++,
+                    pumptype: fueltype[i]
+                  }
+                  petrolstationdata.pumps.push(p)
+                }
+              }
+              console.log(petrolstationdata)
+              PetrolStation.create(petrolstationdata)
+              res.send('Petrol Station added')
+            } else {
+              res.json({
+                error: "Petrol Station already exists"
+              })
+            }
+          })
+          .catch(err => {
+            res.json({ error: err })
+          })
+      }
+      else {
+        res.json({ error: 'Admin not valid' })
+      }
+    })
+    .catch(err => {
+      res.json({ error: err })
+    })
+}
+
+
+router.get('/getpetrolpump', getpetrolpump);
+
+function getpetrolpump(req, res) {
+  PetrolStation.findOne({
+    name: req.body.name
+  })
+    .then(petrol => {
+      console.log(petrol)
+      res.send('valid')
+    })
 }
 
 module.exports = router;

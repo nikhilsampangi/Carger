@@ -58,7 +58,7 @@ const schema = new Schema({
 
         pId: {type:String, required:true}, //Petrol station ID
 
-        pumpId: {type:String, required:true},
+        pumpId: {type:String},
 
         createdAt: {type:Date, default: Date.now, required:true},
 

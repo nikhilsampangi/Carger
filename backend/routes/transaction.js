@@ -2,7 +2,6 @@ const express = require('express');
 const paypal = require('paypal-rest-sdk');
 const User= require('../models/user.model');
 
-router.post('/pay', pay)
 
 function pay(req, res) {
     const create_payment_json = {

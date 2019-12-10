@@ -4,7 +4,7 @@ import {
   Route,
   Switch,
   Redirect
-} from "react-router-dom"
+} from "react-router-dom";
 // import logo from './logo_v1.png';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -40,7 +40,6 @@ export default class App extends Component {
             <Route exact path="/Admin" component={Adm} />
             <Route exact path="/Employee_home" component={Stf_home} />
             <Route exact path="/Admin_home" component={Adm_home} />
-            <Route exact path="/trans" component={Trans} />
 
             <Route exact path="/pay" component={transaction} />
             <Route exact path="/Home" component={Usr_home} />
