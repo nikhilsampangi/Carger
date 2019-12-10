@@ -3,7 +3,7 @@ const paypal = require('paypal-rest-sdk');
 const User= require('../models/user.model');
 
 
-function pay(req, res) {
+function pay(details, callback) {
     const create_payment_json = {
         "intent": "sale",
         "payer": {

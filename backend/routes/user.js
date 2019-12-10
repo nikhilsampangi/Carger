@@ -319,13 +319,14 @@ function cancel(req, res) {
 }
 
 
-router.get('/gas_trans', auth, gas_trans)
+router.post('/gas_trans', auth, gas_trans)
 
 function gas_trans(req, res) {
   Pump.findOne({
-    pid: req.body.pid
+    name: req.body.name
   })
     .then(pump =>{
+      console.log(pump)
       if(pump){
         var cost_pl = 0
         var pump_quan = 0
@@ -399,6 +400,9 @@ function gas_trans(req, res) {
                 else{
                   res.send('Not enough wallet balance.Please add money to wallet')
                 }
+              }
+              else{
+                res.send('no user found!!!')
               }
             })
             .catch(err=>{
