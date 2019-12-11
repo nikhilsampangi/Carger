@@ -14,7 +14,10 @@ const schema = new Schema({
         shutdown: {type:Boolean, default:false},
         pumptype: {type:String, required:true}
     }],
+    pendingTransactions: {type:String, default: "0"},
+    estimatedTime: {type:String},
     address: {type:String, required:true},
+    city: {type:String},
     emergencyShutdown: {type:Boolean, default:false},
     latitude: {type:String, required: true},
     longitude: {type:String, required: true},

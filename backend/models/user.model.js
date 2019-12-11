@@ -54,7 +54,7 @@ const schema = new Schema({
 
         cost: {type:Number, required:true},
 
-        status: {type:String, enum:['initiated', 'processing', 'completed', 'failed'], required:true},
+        status: {type:String, enum:['initiated', 'processing', 'completed', 'cancelled'], required:true},
 
         pId: {type:String, required:true}, //Petrol station ID
 
@@ -65,6 +65,8 @@ const schema = new Schema({
         updatedAt: {type:Date, default: Date.now, required:true},
 
         eWalletTransactionId: {type:String, required : true},
+
+        feedback: {type:String},
 
         otp:  {type:String}
     }],

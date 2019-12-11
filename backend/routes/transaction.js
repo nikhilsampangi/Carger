@@ -154,13 +154,18 @@ function update_balance(data){
 //             .catch(err =>{
 //                 return err
 //             })
+//             setTimeout(doSomething, 3000)
 //         }
 //    })
 //    .catch(err =>{
 //        return err
 //    })
 
-//    console.log('after interval', lis)
+//    console.log('after interval')
+//    function doSomething(){
+//     console.log('time', lis)
+//     return lis
+// }
 // }
 
 module.exports= {pay, success, update_balance}
