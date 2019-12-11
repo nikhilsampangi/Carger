@@ -64,8 +64,9 @@ const schema = new Schema({
 
         updatedAt: {type:Date, default: Date.now, required:true},
 
-        eWalletTransactionId: {type:String, required : true}
+        eWalletTransactionId: {type:String, required : true},
 
+        otp:  {type:String}
     }],
 
     eWalletTransactions: [{
