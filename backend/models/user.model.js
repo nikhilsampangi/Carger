@@ -66,6 +66,8 @@ const schema = new Schema({
 
         eWalletTransactionId: {type:String, required : true},
 
+        feedback: {type:String},
+
         otp:  {type:String}
     }],
 
