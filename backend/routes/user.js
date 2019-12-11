@@ -628,7 +628,8 @@ function review(req, res){
               $push: {
                 description: {
                   text: req.body.text,
-                  ratedAt: d_new              }
+                  ratedAt: d_new 
+                }
               }
             }
 
