@@ -156,12 +156,13 @@ class AddOutletForm extends Component {
 
   handleSubmit(event) {
     if (Cookies.get('usertoken')) {
+      const fuelDetails = {dieselCapacity: this.state.dieselCapacity,
+        petrolCapacity: this.state.petrolCapacity,
+        cngCapacity: this.state.cngCapacity,}
       const outlet = {
         outletName: this.state.outletName,
         outletAddress: this.state.outletAddress,
-        dieselCapacity: this.state.dieselCapacity,
-        petrolCapacity: this.state.petrolCapacity,
-        cngCapacity: this.state.cngCapacity,
+        fuelDetails: fuelDetails,
         petrolPumps: this.state.petrolPumps,
         dieselPumps: this.state.dieselPumps,
         cngPumps: this.state.cngPumps,
@@ -290,7 +291,7 @@ class AddOutletForm extends Component {
             <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange} /></div>
           </div>
           <br />
-          <div className="form-row">
+          {/* <div className="form-row">
             <div className="col">
               <label>Manager's Username</label>
               <input type="text" className="form-control" />
@@ -300,7 +301,7 @@ class AddOutletForm extends Component {
               <input type="text" className="form-control" />
             </div>
           </div>
-          <br />
+          <br /> */}
           <div className="form-row">
             <div className="col"></div>
             <button className="btn btn-outline-dark btn-block col-10" onClick={this.handleSubmit}>

@@ -231,7 +231,7 @@ function addStation(req, res) {
   // res.body.fuelDetails is array of objects
 
   Admin.findOne({
-    email: req.user.email
+    _id: req.user._id
   })
     .then(admin => {
       if (admin) {

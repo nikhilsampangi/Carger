@@ -2,10 +2,10 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export const addpetrolstation = details => {
+    console.log('in axios call', details)
     return axios.post('admin/addstation', {
-        name: details.name,
-        email: details.email,
-        address: details.address,
+        name: details.outletName,
+        address: details.outletAddress,
         fuelDetails: details.fuelDetails,
         petrolpumps: details.petrolpumps,
         dieselpumps: details.dieselpumps,
@@ -22,7 +22,7 @@ export const addpetrolstation = details => {
                 const check = {
                     data: res.data
                 }
-                return check
+                return res
             }
         })
 }
