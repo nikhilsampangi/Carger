@@ -470,62 +470,64 @@ function gas_trans(req, res) {
     })
 }
 
+
 router.post('/gmap', gmap)
 
-function gmap(req, res) {
+async function gmap(req, res) {
     
   const lat = req.body.lat
   const lng = req.body.lng
-
+  var us = []
   lis = []
-  User.find({})
+  await Pump.find({})
     .then(u => {
-      for(let i = 0; i < u.length; i++){
-            // d = u[i].latitude + ',' + u[i].longitude
-        googleMapsClient.directions({
-            origin: lat + ',' + lng,
-            destination: '33.8068768,-118.3527671',
-            units: 'metric'
-        })
-        .asPromise()
-        .then(response => {
-          d = response.json.routes[0].legs[0].distance.text
-          x = d.split(" ")
-          if(parseFloat(x[0]) < 100){
-            lis.push(i)
-          }
-          console.log(d)
-          console.log(lis)
-          console.log(response.json);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-
-
-
-    //   googleMapsClient.directions({
-    //     origin: lat + ',' + lng,
-    //     destination: '33.8068768,-118.3527671',
-    //     units: 'metric'
-    //   }, function(err, response) {
-    //     if (!err) {
-    //       d = response.json.routes[0].legs[0].distance.text
-    //       x = d.split(" ")
-    //       if(parseFloat(x[0]) > 50){
-    //         console.log(parseFloat(x[0]))
-    //         list.push(i)
-    //       }
-    //       console.log(list)
-    //     }
-    //   });
-    //   if(i == u.length-1){
-    //     console.log(list)
-    //   }
-    // }
-    }
-    res.send(lis)
+      us = u
   })
+  for(let i = 0; i < us.length; i++){
+    d = us[i].latitude + ',' + us[i].longitude
+    await googleMapsClient.directions({
+      origin: lat + ',' + lng,
+      destination: d,
+      units: 'metric'
+    })
+    .asPromise()
+    .then(response => {
+      d = response.json.routes[0].legs[0].distance.text
+      x = d.split(" ")
+      if(parseFloat(x[0]) < 100){
+        lis.push(i)
+      }
+      console.log(d)
+      console.log(lis)
+      console.log(response.json);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+
+
+//   googleMapsClient.directions({
+//     origin: lat + ',' + lng,
+//     destination: '33.8068768,-118.3527671',
+//     units: 'metric'
+//   }, function(err, response) {
+//     if (!err) {
+//       d = response.json.routes[0].legs[0].distance.text
+//       x = d.split(" ")
+//       if(parseFloat(x[0]) > 50){
+//         console.log(parseFloat(x[0]))
+//         list.push(i)
+//       }
+//       console.log(list)
+//     }
+//   });
+//   if(i == u.length-1){
+//     console.log(list)
+//   }
+// }
+  }
+  res.send(lis)
 }
 
 
@@ -558,24 +560,17 @@ function str_dis(req, res) {
       for(let i=0; i < p.length; i++){
         var lat2 = parseFloat(p[i].latitude)
         var lng2 = parseFloat(p[i].longitude)
-        var R = 6371e3; // metres
-        var ph1 = lat.toRadians();
-        var ph2 = lat2.toRadians();  
-        var dph = (lat2-lat).toRadians();
-        var dl = (lng2-lng).toRadians();
-
-        var a = Math.sin(dph/2) * Math.sin(dph/2) + Math.cos(ph1) * Math.cos(ph2) * Math.sin(dl/2) * Math.sin(dl/2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var d = R * c;
+        var R = 6371; // Radius of the earth in km
+        var dLat = (lat2 - lat) * Math.PI / 180;  // deg2rad below
+        var dLon = (lng2 - lng) * Math.PI / 180;
+        var a = 0.5 - Math.cos(dLat)/2 + Math.cos(lat * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (1 - Math.cos(dLon))/2;
+        d = R * 2 * Math.asin(Math.sqrt(a));
         if(d < 100){
           l.push(p[i])
         }
       }
       res.send(l)
     })
-
-
-  
 }
 
 
