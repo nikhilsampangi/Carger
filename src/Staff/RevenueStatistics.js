@@ -6,31 +6,31 @@ import {
 // Backend : send data in below format
 const revenue_data = [
   {
-    name: 'Apr \'19', Revenue: 62000, Expenditure: 40000,
+    name: 'Apr \'19', Revenue: 62000,
   },
   {
-    name: 'May \'19', Revenue: 72000, Expenditure: 47000,
+    name: 'May \'19', Revenue: 72000, 
   },
   {
-    name: 'Jun \'19', Revenue: 69000, Expenditure: 40000,
+    name: 'Jun \'19', Revenue: 69000,
   },
   {
-    name: 'Jul \'19', Revenue: 73000, Expenditure: 41000,
+    name: 'Jul \'19', Revenue: 73000, 
   },
   {
-    name: 'Aug \'19', Revenue: 54000, Expenditure: 45000,
+    name: 'Aug \'19', Revenue: 54000,
   },
   {
-    name: 'Sept \'19', Revenue: 65000, Expenditure: 48000,
+    name: 'Sept \'19', Revenue: 65000, 
   },
   {
-    name: 'Oct \'19', Revenue: 40000, Expenditure: 42000,
+    name: 'Oct \'19', Revenue: 40000, 
   },
   {
-    name: 'Nov \'19', Revenue: 51000, Expenditure: 38000,
+    name: 'Nov \'19', Revenue: 51000,
   },
   {
-    name: 'Dec \'19', Revenue: 57000, Expenditure: 46000,
+    name: 'Dec \'19', Revenue: 57000,
   },
 ];
 
@@ -126,7 +126,7 @@ export default class RevenueStatistics extends Component {
                   <Legend />
                   {/* < Bar yAxisId="left" dataKey="pv" fill="#8884d8" />
                   <Bar yAxisId="right" dataKey="uv" fill="#82ca9d" /> */}
-                  < Bar dataKey="Expenditure" fill="#27a9e3" />
+                  
                   <Bar dataKey="Revenue" fill="#da542e" />
                 </BarChart>
               </div>

@@ -3,6 +3,7 @@ import { ReactComponent as Car } from '../assets/fp_car.svg';
 import "./Cust.css";
 import { Link } from 'react-router-dom';
 import { login } from './staffFunctions';
+import { Redirect } from "react-router-dom";
 
 function change_bg(cls) {
   document
@@ -66,10 +67,13 @@ class Login extends Component {
   }
 
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value }, ()=> {
+      console.log(this.state)
+    });
   }
+  
   handleSubmit(event) {
-
+    console.log(this.state)
     const user = {
       email: this.state.email,
       hashedPassword: this.state.hashedPassword
@@ -96,6 +100,9 @@ class Login extends Component {
   }
 
   render() {
+    if(this.state.authenticated===1){
+      return <Redirect to="/Employee_Home" />
+    }
     return (
       <form className="form form-login" onSubmit={this.handleSubmit}>
         <fieldset>
@@ -109,10 +116,10 @@ class Login extends Component {
             <input id="login-password" type="password" name="hashedPassword" value={this.state.hashedPassword} onChange={this.handleChange} required />
           </div>
         </fieldset>
-        <Link type="submit" className="btn btn-outline-success btn-login" to="/Employee_Home">
-          {/* <Link to="Employee_home">Login</Link> */}
+        <button type="submit" className="btn btn-outline-success btn-login">Login</button>
+        {/* <Link type="submit" className="btn btn-outline-success btn-login" to="/Employee_Home">
           Login
-        </Link>
+        </Link> */}
       </form>
 
     )

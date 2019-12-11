@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import { ReactComponent as Pump_art } from '../assets/home_pump_art.svg';
 import { ReactComponent as Fuel_price_art } from '../assets/fuel_price_art.svg';
+import { profile } from '../authentication/userFunctions'
 
 function change_bg(cls) {
   document
@@ -15,6 +16,35 @@ function change_bg(cls) {
 }
 
 export default class Usr_home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { authenticated: true, username:'', wallet:'', transactions:[] }
+  }
+
+
+  handleprofile(event) {
+    let prof;
+    if(Cookies.get('usertoken')) {
+      prof = {
+        token: Cookies.get('usertoken')
+      }
+    }
+    console.log(Cookies.get('usertoken'))
+    profile(prof)
+    .then(res => {
+      console.log(res)
+      this.setState({
+        username: res.data.username,
+        wallet: res.data.balance,
+        transactions: res.data.gasTransactions
+      })
+    })
+  }
+
+  componentDidMount(event) {
+    this.handleprofile();
+  }
+
   render() {
     if (Cookies.get('usertoken')) {
       return (
@@ -25,7 +55,7 @@ export default class Usr_home extends Component {
             <div className="row">
               <div className="col" >
                 <Grad_Strip />
-                <h1 style={{ "fontFamily": "josefin sans", "fontSize": "4em" }}>Hello User.Name!<br /> Welcome Back!!</h1>
+                <h1 style={{ "fontFamily": "josefin sans", "fontSize": "4em" }}>Hello {this.state.username}!<br /> Welcome Back!!</h1>
               </div>
               <div className="col-1" />
               <div className="col" >

@@ -3,14 +3,14 @@ import { Link, Redirect } from "react-router-dom";
 import Navbar from "./Navbar";
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import { ReactComponent as Wallet } from '../assets/wallet.svg';
-import { pay } from '../authentication/userFunctions';
+import { pay, profile } from '../authentication/userFunctions';
 import Cookies from 'js-cookie';
 import Modal from 'react-responsive-modal';
 
 export default class Usr_wallet extends Component {
   constructor(props) {
     super(props);
-    this.state = { amount: '', redirectLink: '', errorFlag: false, errMsg: "" };
+    this.state = { amount: '', redirectLink: '', errorFlag: false, errMsg: "", username:'', wallet:'', transactions:[] };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -19,6 +19,30 @@ export default class Usr_wallet extends Component {
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
+
+  handleprofile(event) {
+    let prof;
+    if(Cookies.get('usertoken')) {
+      prof = {
+        token: Cookies.get('usertoken')
+      }
+    }
+    console.log(Cookies.get('usertoken'))
+    profile(prof)
+    .then(res => {
+      console.log(res)
+      this.setState({
+        username: res.data.username,
+        wallet: res.data.balance,
+        transactions: res.data.gasTransactions
+      })
+    })
+  }
+
+  componentDidMount(event) {
+    this.handleprofile();
+  }
+
 
   handleSubmit(event) {
     if (Cookies.get('usertoken')) {
@@ -112,7 +136,7 @@ export default class Usr_wallet extends Component {
                   <button className="btn btn-outline-dark btn-block" onClick={this.handleSubmit}>Add Money</button>
                 </div>
               </div>
-              <WalletBalance />
+              <WalletBalance wallet={this.state.wallet}/>
             </div>
           </div>
         </div >
@@ -138,7 +162,7 @@ class WalletBalance extends Component {
           <Wallet style={{ "height": "35vh" }} />
           &nbsp;&nbsp;&nbsp;
         <span style={{ "fontSize": "3em" }}>
-            :&nbsp;69
+            :&nbsp;{this.props.wallet}
           {/* &nbsp;&nbsp;<i className="fa fa-coins" /> */}
           </span>
         </div>
