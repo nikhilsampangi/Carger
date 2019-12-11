@@ -5,14 +5,40 @@ import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import "./Usr_shop.css"
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { profile } from "../authentication/userFunctions"
+
 
 export default class Usr_shop extends Component {
   constructor(props) {
     super(props);
     // default set fuelavail to -1
-    this.state = { fuelAvail: 0, quantity: 0, fuelType: 1, OutletName: 0 };
+    this.state = { fuelAvail: 0, quantity: 0, fuelType: 1, OutletName: 0, authenticated: true, username:'', wallet:'', transactions:[]  };
     this.handleChange = this.handleChange.bind(this)
   }
+
+  handleprofile(event) {
+    let prof;
+    if(Cookies.get('usertoken')) {
+      prof = {
+        token: Cookies.get('usertoken')
+      }
+    }
+    console.log(Cookies.get('usertoken'))
+    profile(prof)
+    .then(res => {
+      console.log(res)
+      this.setState({
+        username: res.data.username,
+        wallet: res.data.balance,
+        transactions: res.data.gasTransactions
+      })
+    })
+  }
+
+  componentDidMount(event) {
+    this.handleprofile();
+  }
+
 
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -99,7 +125,7 @@ export default class Usr_shop extends Component {
               <div className="col">
                 <Grad_Strip />
                 <h2 className="usr_hdngs">Recent Purchaces</h2>
-                Backend: copy paste code from your transactions in profile page
+                <Recent_Transactions transactions={this.state.transactions}/>
               </div>
             </div>
           </div>
@@ -129,7 +155,7 @@ class Frequent_Outlets extends Component {
     return (
       <div className="col">
         <Grad_Strip />
-        <h2 className="usr_hdngs">Your Frequent Outlets</h2>
+        <h2 className="usr_hdngs">Your Recent Outlets</h2>
         <div className="card-body">
           {render_outlet}
         </div>
@@ -148,6 +174,44 @@ class Outlet extends Component {
           <span className="flex-row-reverse">
           {/* send through props */}
           outlet.lastvisited
+      </span>
+      </div>
+    )
+  }
+}
+
+class Recent_Transactions extends Component {
+
+  render() {
+    {/* backend: send array of all gas transactions here */ }
+    var gasTrans = []
+    // var len = gasTrans.length // comment below one and uncomment this
+    var len = this.props.transactions.length // hardcoded for now
+    var render_tr = []
+    for (var i = 0; i < len; i++) {
+      render_tr.push(<Transaction transaction={this.props.transactions[i]}/>);// Add required props here
+      render_tr.push(<hr />);
+    }
+    return (
+      <div className="col" style={{ "fontFamily": "Josefin Sans, sans-serif" }}>
+        <div className="card-body">
+          {render_tr}
+        </div>
+      </div>
+
+    )
+  }
+}
+
+class Transaction extends Component {
+  render() {
+    return (
+      <div className="row d-flex justify-content-between align-items-center">
+        {/* send through props */}
+        {this.props.transaction.quantity}
+      <span className="flex-row-reverse">
+          {/* send through props */}
+          {this.props.transaction.cost}
       </span>
       </div>
     )

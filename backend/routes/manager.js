@@ -197,6 +197,7 @@ function startStation(req, res) {
 router.post('/shutdownpump', auth, shutdownPump)
 
 function shutdownPump(req, res) {
+    console.log(req)
     Manager.findOne({
         email: req.body.email
     })
@@ -262,14 +263,14 @@ router.post('/updatefueldetails', auth, updateFuelDetails)
 
 function updateFuelDetails(req, res) {
     Manager.findOne({
-        email: req.body.email
+        _id: req.user._id
     })
     .then(manager => {
         // res.send('in update fuel details')
         if(manager) {
             // res.send('manager true')
             PetrolPumps.findOne({
-                _id: req.body.pid
+                name: manager.worksAt.pName
             })
             .then(petrolpumps => {
                 // res.send('petrolpumps true')
@@ -305,5 +306,35 @@ function updateFuelDetails(req, res) {
     })
 }
 
+router.get('/fueldetails', auth, fuelDetails)
+
+function fuelDetails(req, res) {
+    // res.send(req.header)
+    // res.send('no errors till here')
+    console.log('fjkdsla')
+    // res.send('got the request')
+    Manager.findOne({
+        _id: req.user._id
+    })
+    .then(manager => {
+        // res.send(manager)
+        PetrolPumps.findOne({
+            name: manager.worksAt.pName
+        })
+        .then(petrolpumps => {
+            details = {
+                fuelDetails: petrolpumps.fuelDetails,
+                pumps: petrolpumps.pumps
+            }
+            res.send(details)
+        })
+        .catch(err => {
+            res.send(err)
+        })
+    })
+    .catch(err => {
+        res.send(err)
+    })
+}
 // router.post('/addpumps/')
 module.exports = router;
