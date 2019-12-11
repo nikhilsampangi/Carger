@@ -32,14 +32,13 @@ connection.once('open', function(){
     console.log("connected");
 });
 
-// cronJob();
-
-
 const route = require('./routes/user');
 const adminroutes = require('./routes/owner');
+const pupmroutes = require('./routes/pumpFunctions');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/user', route);
 app.use('/admin', adminroutes);
+app.use('/pump', pupmroutes);
 app.listen(port, () => console.info('REST API running on port '+ port));

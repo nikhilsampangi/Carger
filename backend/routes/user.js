@@ -8,6 +8,7 @@ const randomToken = require('random-token');
 
 const User = require('../models/user.model');
 const Pump = require('../models/petrolStation.model')
+const Review = require('../models/feedback.model')
 
 const email = require('./send_email');
 
@@ -109,7 +110,8 @@ function login(req, res) {
           // Passwords match
           const payload = {
             _id: user._id,
-            email: user.email
+            email: user.email,
+            username: user.username
           }
           let token = jwt.sign(payload, process.SECRET_KEY, {
             algorithm: 'HS256',
@@ -538,8 +540,8 @@ function pending_trans(req, res) {
   })
     .then(user =>{
       for(let i=0; i < user.gasTransactions.length; i++){
-        if(gasTransactions[i].status == 'initiated'){
-          list.push(gasTransactions[i])
+        if(user.gasTransactions[i].status == 'initiated'){
+          list.push(user.gasTransactions[i])
         }
       }
       res.send(list)
@@ -578,5 +580,69 @@ function str_dis(req, res) {
   
 }
 
+
+router.post('/review', auth, review)
+
+function review(req, res){
+
+  Review.findOne({
+    email: req.user.email
+  }).then(user=>{
+    if(!user){
+      const newData= {
+        username: req.user.username,
+        email: req.user.email,
+        rating: req.body.rating,
+      }
+
+      Review.create(newData).then(created=>{
+
+          var d = new Date();
+          var d_new = d.toISOString();
+          const newValues = {
+            $push: {
+              description: {
+                text: req.body.text,
+                ratedAt: d_new              }
+            }
+          }
+
+          Review.updateOne({
+            email: req.user.email
+          }, newValues)
+          .then(updated=>{
+            res.send('Posted Successfully')
+          })
+      })
+    }
+
+    else{        
+
+      Review.updateOne({
+        email: req.user.email
+      }, {$set:{rating:req.body.rating}}).then(updated=>{
+            console.log("updated rating")
+            var d = new Date();
+            var d_new = d.toISOString();
+            const newValues = {
+              $push: {
+                description: {
+                  text: req.body.text,
+                  ratedAt: d_new              }
+              }
+            }
+
+            Review.updateOne({
+              email: req.user.email
+            }, newValues).then(updated2=>{
+                res.send("updated all")
+            })
+        })
+    }
+  }).catch(err=>{
+    res.send(err)
+  })
+
+}
 
 module.exports = router;
