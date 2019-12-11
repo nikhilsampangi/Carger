@@ -6,6 +6,8 @@ import Dashboard from './Dashboard';
 import RevenueStatistics from './RevenueStatistics';
 import PumpStatistics from './PumpStatistics';
 import CustomerFeedback from './CustomerFeedback';
+import Cookies from "js-cookie";
+
 
 function change_bg(cls) {
   document
@@ -28,13 +30,20 @@ export default class Stf_home extends Component {
   // }
   constructor(props) {
     super(props);
-    this.state = { Tab: 1 }
+    this.state = { Tab: 1, }
   }
   // componentDidMount() {
   //   this.refs.myComponentDiv.addEventListener('click', this.clickHandler);
   // }
   // clickHandler() {
   // }
+
+  logOut(event) {
+    event.preventDefault()
+    Cookies.remove('usertoken')
+    // this.setState({ authenticated: false })
+  }
+  
   render() {
     let Db = "Db"
     let Rs = "Rs"
@@ -52,6 +61,8 @@ export default class Stf_home extends Component {
     else if (this.state.Tab === 4) {
       Cf = "CfActive"
     }
+
+    
     return (
       <Fragment onLoad={change_bg("boo")} className="container-fluid">
         <nav class="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow" style={{ "backgroundColor": "#1f262d" }}>
@@ -65,7 +76,7 @@ export default class Stf_home extends Component {
             </li>
           </ul> */}
           <Link className="flex-row-reverse" to="/">
-            <h5 style={{ "color": "white", "marginRight": "1.7vw" }}><i className="fas fa-sign-out-alt"></i>&nbsp;Log out</h5>
+            <h5 style={{ "color": "white", "marginRight": "1.7vw" }} onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log out</h5>
           </Link>
         </nav>
         <div>
