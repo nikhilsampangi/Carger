@@ -2,15 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    name: {type:String, required:true, unique=true},
+    name: {type:String, required:true, unique:true},
     hashedPassword: {type:String, required:true},
     phone: {
         type:Number,
         required: true,
         validate: {
             validator: function(v) {
-                return /d{10}/.test(v)
-            }
+                var re = /^\d{10}$/;
+                return re.test(v)
+            },
+            message: 'Phone number must be 10 digit number'
         }
     },
     email: {type:String, required: true},

@@ -9,6 +9,8 @@ const randomToken = require('random-token');
 const User = require('../models/user.model');
 const Pump = require('../models/petrolStation.model')
 
+const PetrolPumps = require('../models/petrolStation.model');
+
 const email = require('./send_email');
 
 const transaction = require('./transaction')
@@ -579,4 +581,41 @@ function str_dis(req, res) {
 }
 
 
+router.get('/show', show);
+
+function show(req, res) {
+  User.findOne({
+  })
+  .then(user => {
+    res.send(user)
+  })
+}
+
+router.get('/getPetrolPumps', getPetrolPumps);
+
+function getPetrolPumps(req, res) {
+  PetrolPumps.find({})
+  .then(petrolpumps => {
+    res.send(petrolpumps)
+  })
+  .catch(err => {
+    res.error(err)
+  })
+};
+
+//req id, fueltype, amount
+
+router.post('/initiateTransaction', auth, initiateTransaction);
+
+function initiateTransaction(req, res) {
+  
+  User.findOne({_id: userid})
+  .then(user => {
+      PetrolPumps.findOne({_id:petrolpumpid})
+      .then()
+  })
+  .catch(err => {
+    res.error(err)
+  })
+}
 module.exports = router;

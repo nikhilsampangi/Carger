@@ -37,9 +37,11 @@ connection.once('open', function(){
 
 const route = require('./routes/user');
 const adminroutes = require('./routes/owner');
+const managerroutes = require('./routes/manager');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/user', route);
 app.use('/admin', adminroutes);
+app.use('/manager', managerroutes);
 app.listen(port, () => console.info('REST API running on port '+ port));
