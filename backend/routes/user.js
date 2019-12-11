@@ -15,6 +15,11 @@ const email = require('./send_email');
 
 const transaction = require('./transaction')
 
+const googleMapsClient = require('@google/maps').createClient({
+  key: 'AIzaSyA7nx22ZmINYk9TGiXDEXGVxghC43Ox6qA',
+  Promise: Promise
+});
+
 router.use(cors());
 
 process.SECRET_KEY = 'secret';
@@ -412,6 +417,7 @@ function gas_trans(req, res) {
                           var gid = Math.random().toString(36).substr(2, 9);
                           var j = new Date();
                           var k = j.toISOString();
+                          var ot  = Math.floor(100000 + Math.random() * 900000)
                           const n= {
                             $push:{
                               gasTransactions: {
@@ -421,9 +427,10 @@ function gas_trans(req, res) {
                                 quantity: req.body.quantity,
                                 cost: total_cost,
                                 status: 'initiated',
-                                pId: req.body.pid,
+                                pId: req.body.name,
                                 createdAt: k,
-                                eWalletTransactionId: tid
+                                eWalletTransactionId: tid,
+                                otp: ot
                               }
                             }
                           }
@@ -463,6 +470,114 @@ function gas_trans(req, res) {
     .catch(err=>{
       res.json({error:err})
     })
+}
+
+router.post('/gmap', gmap)
+
+function gmap(req, res) {
+    
+  const lat = req.body.lat
+  const lng = req.body.lng
+
+  lis = []
+  User.find({})
+    .then(u => {
+      for(let i = 0; i < u.length; i++){
+            // d = u[i].latitude + ',' + u[i].longitude
+        googleMapsClient.directions({
+            origin: lat + ',' + lng,
+            destination: '33.8068768,-118.3527671',
+            units: 'metric'
+        })
+        .asPromise()
+        .then(response => {
+          d = response.json.routes[0].legs[0].distance.text
+          x = d.split(" ")
+          if(parseFloat(x[0]) < 100){
+            lis.push(i)
+          }
+          console.log(d)
+          console.log(lis)
+          console.log(response.json);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    //   googleMapsClient.directions({
+    //     origin: lat + ',' + lng,
+    //     destination: '33.8068768,-118.3527671',
+    //     units: 'metric'
+    //   }, function(err, response) {
+    //     if (!err) {
+    //       d = response.json.routes[0].legs[0].distance.text
+    //       x = d.split(" ")
+    //       if(parseFloat(x[0]) > 50){
+    //         console.log(parseFloat(x[0]))
+    //         list.push(i)
+    //       }
+    //       console.log(list)
+    //     }
+    //   });
+    //   if(i == u.length-1){
+    //     console.log(list)
+    //   }
+    // }
+    }
+    res.send(lis)
+  })
+}
+
+
+router.post('/pending_trans', auth, pending_trans)
+
+function pending_trans(req, res) {
+  list = []
+  User.findOne({
+    _id: req.user._id
+  })
+    .then(user =>{
+      for(let i=0; i < user.gasTransactions.length; i++){
+        if(gasTransactions[i].status == 'initiated'){
+          list.push(gasTransactions[i])
+        }
+      }
+      res.send(list)
+    })
+}
+
+router.post('/str_dis', auth, str_dis)
+
+function str_dis(req, res) {
+  l = []
+  lat = parseFloat(req.body.latitude)
+  lng = parseFloat(req.body.longitude)
+
+  Pump.find()
+    .then(p =>{
+      for(let i=0; i < p.length; i++){
+        var lat2 = parseFloat(p[i].latitude)
+        var lng2 = parseFloat(p[i].longitude)
+        var R = 6371e3; // metres
+        var ph1 = lat.toRadians();
+        var ph2 = lat2.toRadians();  
+        var dph = (lat2-lat).toRadians();
+        var dl = (lng2-lng).toRadians();
+
+        var a = Math.sin(dph/2) * Math.sin(dph/2) + Math.cos(ph1) * Math.cos(ph2) * Math.sin(dl/2) * Math.sin(dl/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        if(d < 100){
+          l.push(p[i])
+        }
+      }
+      res.send(l)
+    })
+
+
+  
 }
 
 

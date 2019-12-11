@@ -17,6 +17,8 @@ const schema = new Schema({
     address: {type:String, required:true},
     city: {type:String},
     emergencyShutdown: {type:Boolean, default:false},
+    latitude: {type:String, required: true},
+    longitude: {type:String, required: true},
 });
 
 schema.set('toJSON', {virtuals:true});
