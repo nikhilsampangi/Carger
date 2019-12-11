@@ -36,7 +36,7 @@ export default class Navbar extends Component {
   render() {
     return (
       <div>
-        <nav className="navbar fixed-top navbar-expand-lg navbar-light userhomenavbar row">
+        <nav className="navbar fixed-top navbar-expand-lg navbar-light userhomenavbar row" style={{ "zIndex": "1000" }}>
           <div className="col" />
           <div className="col" />
           <div className="col-2" style={{ "paddingBottom": "3rem" }}>

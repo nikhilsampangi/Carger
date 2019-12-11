@@ -29,22 +29,82 @@ router.post('/register', register_admin)
 
 
 
+// router.post('/addsuperuser', addSuperUser);
+
+// function addSuperUser(req, res) {
+//   const admin_data = {
+//     name: req.body.username,
+//     hashedPassword: req.body.hashedPassword,
+//     email: req.body.email,
+//     isAdmin: true
+//   }
+//   bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
+//     admin_data.hashedPassword = hash;
+//     Admin.create(admin_data)
+//       .then(user => {
+
+//         const gen_token = randomToken(55);
+
+//         // email.send_verification_token(gen_token, user.email);
+
+//         var newValues = {
+//           $set: {
+//             token: gen_token
+//           }
+//         };
+
+//         Admin.updateOne({
+//           _id: user._id
+//         }, newValues)
+//           .then(user => {
+//             if (user) {
+//               console.log("updated token")
+//             } else {
+//               console.log({
+//                 error: "token not updated"
+//               })
+//             }
+//           })
+//           .catch(err => {
+//             console.log('error:' + err.message)
+//           });
+
+//         res.json({
+//           status: "registered"
+//         });
+//       })
+
+//       .catch(err => {
+//         var arr = Object.keys(err['errors'])
+//         var errors = []
+//         for (i in arr) {
+//           errors.push(err['errors'][arr[i]].message);
+//         }
+//         console.log(errors)
+//         res.json({
+//           error: errors
+//         });
+//       })
+
+//     console.log(admin_data)
+//   }
+
 function register_admin(req, res) {
   const admin_data = {
     name: req.body.username,
     hashedPassword: req.body.hashedPassword,
-    email: req.body.email,
+    email: req.body.email
   }
 
   Admin.findOne({
-      name: req.body.superAdmin,
-      isAdmin: true
-    })
+    name: req.body.superAdmin,
+    isAdmin: true
+  })
     .then(super_admin => {
       if (super_admin) {
         Admin.findOne({
-            email: req.body.email
-          })
+          email: req.body.email
+        })
           .then(admin => {
             if (!admin) {
               bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
@@ -63,8 +123,8 @@ function register_admin(req, res) {
                     };
 
                     Admin.updateOne({
-                        _id: user._id
-                      }, newValues)
+                      _id: user._id
+                    }, newValues)
                       .then(user => {
                         if (user) {
                           console.log("updated token")
@@ -123,8 +183,8 @@ router.post('/login', login)
 
 function login(req, res) {
   Admin.findOne({
-      email: req.body.email
-    })
+    email: req.body.email
+  })
     .then(admin => {
       if (admin) {
         if (bcrypt.compareSync(req.body.hashedPassword, admin.hashedPassword)) {
@@ -156,7 +216,7 @@ function login(req, res) {
 
 }
 
-router.post('/addstation', addStation)
+router.post('/addstation', auth, addStation)
 
 function addStation(req, res) {
   // send dieselpumps, petrolpumps, cngpumps
@@ -166,27 +226,25 @@ function addStation(req, res) {
     address: req.body.address,
     pumps: []
   }
-
-
   // res.send('done')
 
   // res.body.fuelDetails is array of objects
 
   Admin.findOne({
-      email: req.body.email
-    })
+    email: req.user.email
+  })
     .then(admin => {
       if (admin) {
         PetrolStation.findOne({
-            name: req.body.name
-          })
+          name: req.body.name
+        })
           .then(petrol => {
             if (!petrol) {
-              tempid = 0
+              tempid = 1
               let fueltype = ["Petrol", "Diesel", "CNG"];
               let pumpcount = [req.body.petrolpumps, req.body.dieselpumps, req.body.cngpumps];
-              for(i=0;i<pumpcount.length; i++){
-                while(pumpcount[i]--) {
+              for (i = 0; i < pumpcount.length; i++) {
+                while (pumpcount[i]--) {
                   var p = {
                     customid: tempid++,
                     pumptype: fueltype[i]
@@ -196,7 +254,14 @@ function addStation(req, res) {
               }
               console.log(petrolstationdata)
               PetrolStation.create(petrolstationdata)
-              res.send('Petrol Station added')
+              .then(added=>{
+                console.log(added);
+                res.send('Petrol Station added')
+              })
+              .catch(err => {
+                console.log(err);
+                res.send('Petrol Station failed to add')
+              });
             } else {
               res.json({
                 error: "Petrol Station already exists"
@@ -204,15 +269,15 @@ function addStation(req, res) {
             }
           })
           .catch(err => {
-            res.send('error: ' + err)
+            res.json({ error: err })
           })
       }
       else {
-        res.send('Admin not valid')
+        res.json({ error: 'Admin not valid' })
       }
     })
     .catch(err => {
-      res.send('error: ' + err)
+      res.json({ error: err })
     })
 }
 
@@ -223,10 +288,10 @@ function getpetrolpump(req, res) {
   PetrolStation.findOne({
     name: req.body.name
   })
-  .then(petrol => {
-    console.log(petrol)
-    res.send('valid')
-  })
+    .then(petrol => {
+      console.log(petrol)
+      res.send(petrol)
+    })
 }
 
 
