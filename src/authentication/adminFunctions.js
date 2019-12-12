@@ -27,6 +27,24 @@ export const addpetrolstation = details => {
         })
 }
 
+export const getpetrolstations = details => {
+    console.log('in axios call getpetrolstations', details)
+    return axios.get('admin/getpetrolstations', { headers: { 'Authorization': details.token } })
+        .then(res => {
+            if (res.data.error) {
+                const check = {
+                    error: res.data.error
+                }
+                return check
+            }
+            else {
+                const check = {
+                    data: res.data
+                }
+                return res
+            }
+        })
+}
 export const register = newUser => {
     return axios.post('admin/register', {
         username: newUser.username,
