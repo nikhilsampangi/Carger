@@ -39,11 +39,11 @@ export default class Stf_home extends Component {
   // }
 
   logOut(event) {
-    event.preventDefault()
+    // event.preventDefault()
     Cookies.remove('usertoken')
     // this.setState({ authenticated: false })
   }
-  
+
   render() {
     let Db = "Db"
     let Rs = "Rs"
@@ -62,7 +62,7 @@ export default class Stf_home extends Component {
       Cf = "CfActive"
     }
 
-    
+
     return (
       <Fragment onLoad={change_bg("boo")} className="container-fluid">
         <nav class="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow" style={{ "backgroundColor": "#1f262d" }}>
