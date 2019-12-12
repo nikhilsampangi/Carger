@@ -31,9 +31,9 @@ export default class OutletOverview extends Component {
               <div className="form-group row">
                 <select className="form-control custom-select col-12" name="OutletName" onChange={this.handleSelect}>
                   {/* Backend */}
-                  <option value="1">Outlet A</option>
-                  <option value="2">Outlet B</option>
-                  <option value="3">Outlet C</option>
+                  <option value="1">Petrol Station 1</option>
+                  <option value="2">Petrol Station 2</option>
+                  <option value="3">Petrol Station 3</option>
                 </select>
               </div>
             </div>
@@ -85,13 +85,12 @@ class Dashboard extends Component {
   render() {
     if (this.state.loaded) {
       const res = []
-      // Error Here
-      // for (let i = 0; i < this.state.fuelDetails.length; i++) {
-      //   console.log(i)
-      //   res.push(
-      //     <StationFuelStatistics fueltype={i} tempstate={this.state} />)
-      //   res.push(<br />)
-      // }
+      for (let i = 0; i < this.state.fuelDetails.length; i++) {
+        console.log(i)
+        res.push(
+          <StationFuelStatistics fueltype={i} tempstate={this.state} />)
+        res.push(<br />)
+      }
       return (
         <div className="container-fluid">
           {res}

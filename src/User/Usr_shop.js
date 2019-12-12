@@ -5,38 +5,51 @@ import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import "./Usr_shop.css"
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { profile } from "../authentication/userFunctions"
+import { profile } from "../authentication/userFunctions";
+import { gasTrans } from "../authentication/userFunctions";
+
 
 
 export default class Usr_shop extends Component {
   constructor(props) {
     super(props);
     // default set fuelavail to -1
-    this.state = { fuelAvail: 0, quantity: 0, fuelType: 1, OutletName: 0, authenticated: true, username:'', wallet:'', transactions:[]  };
+    this.state = { fuelAvail: 0, quantity: 0, fuelType: 1, OutletName: 0, authenticated: true, username: '', wallet: '', transactions: [] };
     this.handleChange = this.handleChange.bind(this)
   }
 
   handleprofile(event) {
     let prof;
-    if(Cookies.get('usertoken')) {
+    if (Cookies.get('usertoken')) {
       prof = {
         token: Cookies.get('usertoken')
       }
     }
     console.log(Cookies.get('usertoken'))
     profile(prof)
-    .then(res => {
-      console.log(res)
-      this.setState({
-        username: res.data.username,
-        wallet: res.data.balance,
-        transactions: res.data.gasTransactions
+      .then(res => {
+        console.log(res)
+        this.setState({
+          username: res.data.username,
+          wallet: res.data.balance,
+          transactions: res.data.gasTransactions
+        })
       })
-    })
+  }
+
+  getOutlets() {
+    gasTrans()
+      .then(res => {
+        console.log(res.data)
+      }).catch(
+        err => { console.log(err) }
+      )
   }
 
   componentDidMount(event) {
     this.handleprofile();
+    this.getOutlets();
+
   }
 
 
@@ -78,9 +91,9 @@ export default class Usr_shop extends Component {
                   <select className="form-control custom-select col-5" name="OutletName" onChange={this.handleChange} value={this.state.value}>
                     {/* Backend */}
                     {/* <option value="0">Select outlet to show availability</option> */}
-                    <option value="1">Outlet A</option>
-                    <option value="2">Outlet B</option>
-                    <option value="3">Outlet C</option>
+                    <option value="1">Petrol Station 1</option>
+                    <option value="2">Petrol Station 2</option>
+                    <option value="3">Petrol Station 3</option>
                   </select>
                   <div className="col-2">
                     <button className="btn btn-outline-dark">
@@ -125,7 +138,7 @@ export default class Usr_shop extends Component {
               <div className="col">
                 <Grad_Strip />
                 <h2 className="usr_hdngs">Recent Purchaces</h2>
-                <Recent_Transactions transactions={this.state.transactions}/>
+                <Recent_Transactions transactions={this.state.transactions} />
               </div>
             </div>
           </div>
@@ -157,7 +170,7 @@ class Frequent_Outlets extends Component {
         <Grad_Strip />
         <h2 className="usr_hdngs">Your Recent Outlets</h2>
         <div className="card-body">
-          {render_outlet}
+          {/* {render_outlet} */}
         </div>
       </div>
 
@@ -189,7 +202,7 @@ class Recent_Transactions extends Component {
     var len = this.props.transactions.length // hardcoded for now
     var render_tr = []
     for (var i = 0; i < len; i++) {
-      render_tr.push(<Transaction transaction={this.props.transactions[i]}/>);// Add required props here
+      render_tr.push(<Transaction transaction={this.props.transactions[i]} />);// Add required props here
       render_tr.push(<hr />);
     }
     return (
@@ -209,10 +222,10 @@ class Transaction extends Component {
       <div className="row d-flex justify-content-between align-items-center">
         {/* send through props */}
         {this.props.transaction.quantity}
-      <span className="flex-row-reverse">
+        <span className="flex-row-reverse">
           {/* send through props */}
           {this.props.transaction.cost}
-      </span>
+        </span>
       </div>
     )
   }
