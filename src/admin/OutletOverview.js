@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 // import Dashboard from "../Staff/Dashboard";
+
 // import PumpStatistics from "../Staff/PumpStatistics";
 import Progress from 'react-circle-progress-bar';
 import { ReactComponent as FuelPump } from '../assets/Pump.svg';
@@ -7,6 +8,7 @@ import { ReactComponent as FuelPumpoff } from '../assets/Pump_off.svg';
 import { fuelDetails } from '../authentication/staffFunctions'
 import Cookies from 'js-cookie';
 import { updateFuel } from '../authentication/staffFunctions'
+
 
 export default class OutletOverview extends Component {
   constructor(props) {
@@ -39,7 +41,6 @@ export default class OutletOverview extends Component {
           <div className="col" />
         </div>
         <br />
-        <Dashboard />
         <br /><br /><br />
         <PumpStatistics pumpcount={[3, 4, 3]} />
       </Fragment>

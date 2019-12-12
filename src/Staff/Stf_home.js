@@ -39,9 +39,7 @@ export default class Stf_home extends Component {
   // }
 
   logOut(event) {
-    // event.preventDefault()
     Cookies.remove('usertoken')
-    // this.setState({ authenticated: false })
   }
 
   render() {
