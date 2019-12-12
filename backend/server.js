@@ -6,8 +6,6 @@ const app= express();
 const port= 8008;
 const paypal= require('paypal-rest-sdk');
 
-const cronJob= require('./time_schedule/cancel_order');
-
 
 app.use(cors());
 
@@ -32,16 +30,15 @@ connection.once('open', function(){
     console.log("connected");
 });
 
-// cronJob();
-
-
 const route = require('./routes/user');
 const adminroutes = require('./routes/owner');
+const pupmroutes = require('./routes/pumpFunctions');
 const managerroutes = require('./routes/manager');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/user', route);
 app.use('/admin', adminroutes);
+app.use('/pump', pupmroutes);
 app.use('/manager', managerroutes);
 app.listen(port, () => console.info('REST API running on port '+ port));

@@ -224,6 +224,8 @@ function addStation(req, res) {
     name: req.body.name,
     fuelDetails: req.body.fuelDetails,
     address: req.body.address,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude,
     pumps: []
   }
   // res.send('done')

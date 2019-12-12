@@ -8,6 +8,9 @@ const randomToken = require('random-token');
 
 const User = require('../models/user.model');
 const Pump = require('../models/petrolStation.model')
+const Review = require('../models/feedback.model')
+const cronJob= require('../time_schedule/cancel_order');
+
 
 const PetrolPumps = require('../models/petrolStation.model');
 
@@ -111,7 +114,8 @@ function login(req, res) {
           // Passwords match
           const payload = {
             _id: user._id,
-            email: user.email
+            email: user.email,
+            username: user.username
           }
           let token = jwt.sign(payload, process.SECRET_KEY, {
             algorithm: 'HS256',
@@ -438,6 +442,26 @@ function gas_trans(req, res) {
                             _id: req.user._id
                           }, n)
                           .then(w =>{
+                            const data= {
+                              date: j,
+                              user: req.user._id,
+                              gasid: gid
+                            }
+                            cronJob(data)
+                            
+                            var count= String(parseFloat(pump.pendingTransactions)+1)
+                            var estd = String(Math.ceil(parseFloat(count)/pump.pumps.length)*5)+"minutes"
+                            const newData={
+                              $set:{
+                                pendingTransactions: count,
+                                estimatedTime: estd
+                              }
+                            }
+
+                            Pump.updateOne({
+                              name: req.body.name
+                            }, newData).then(r=>{console.log("updated estimated time")})
+                    
                             res.send('Updated')
                           })
                           .catch(err => {
@@ -472,62 +496,41 @@ function gas_trans(req, res) {
     })
 }
 
+
 router.post('/gmap', gmap)
 
-function gmap(req, res) {
-    
+async function gmap(req, res) {
   const lat = req.body.lat
   const lng = req.body.lng
-
+  var us = []
   lis = []
-  User.find({})
+  await Pump.find({})
     .then(u => {
-      for(let i = 0; i < u.length; i++){
-            // d = u[i].latitude + ',' + u[i].longitude
-        googleMapsClient.directions({
-            origin: lat + ',' + lng,
-            destination: '33.8068768,-118.3527671',
-            units: 'metric'
-        })
-        .asPromise()
-        .then(response => {
-          d = response.json.routes[0].legs[0].distance.text
-          x = d.split(" ")
-          if(parseFloat(x[0]) < 100){
-            lis.push(i)
-          }
-          console.log(d)
-          console.log(lis)
-          console.log(response.json);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-
-
-
-    //   googleMapsClient.directions({
-    //     origin: lat + ',' + lng,
-    //     destination: '33.8068768,-118.3527671',
-    //     units: 'metric'
-    //   }, function(err, response) {
-    //     if (!err) {
-    //       d = response.json.routes[0].legs[0].distance.text
-    //       x = d.split(" ")
-    //       if(parseFloat(x[0]) > 50){
-    //         console.log(parseFloat(x[0]))
-    //         list.push(i)
-    //       }
-    //       console.log(list)
-    //     }
-    //   });
-    //   if(i == u.length-1){
-    //     console.log(list)
-    //   }
-    // }
-    }
-    res.send(lis)
+      us = u
   })
+  for(let i = 0; i < us.length; i++){
+    d = us[i].latitude + ',' + us[i].longitude
+    await googleMapsClient.directions({
+      origin: lat + ',' + lng,
+      destination: d,
+      units: 'metric'
+    })
+    .asPromise()
+    .then(response => {
+      d = response.json.routes[0].legs[0].distance.text
+      x = d.split(" ")
+      var value = us[i]
+      value["distance"] = parseFloat(x[0]) 
+      lis.push(value)
+      console.log(value.distance)
+      console.log(lis)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+  lis.sort((a,b)=>(a.distance < b.distance) ? 1: -1)
+  res.send(lis)
 }
 
 
@@ -540,46 +543,13 @@ function pending_trans(req, res) {
   })
     .then(user =>{
       for(let i=0; i < user.gasTransactions.length; i++){
-        if(gasTransactions[i].status == 'initiated'){
-          list.push(gasTransactions[i])
+        if(user.gasTransactions[i].status == 'initiated'){
+          list.push(user.gasTransactions[i])
         }
       }
       res.send(list)
     })
 }
-
-router.post('/str_dis', auth, str_dis)
-
-function str_dis(req, res) {
-  l = []
-  lat = parseFloat(req.body.latitude)
-  lng = parseFloat(req.body.longitude)
-
-  Pump.find()
-    .then(p =>{
-      for(let i=0; i < p.length; i++){
-        var lat2 = parseFloat(p[i].latitude)
-        var lng2 = parseFloat(p[i].longitude)
-        var R = 6371e3; // metres
-        var ph1 = lat.toRadians();
-        var ph2 = lat2.toRadians();  
-        var dph = (lat2-lat).toRadians();
-        var dl = (lng2-lng).toRadians();
-
-        var a = Math.sin(dph/2) * Math.sin(dph/2) + Math.cos(ph1) * Math.cos(ph2) * Math.sin(dl/2) * Math.sin(dl/2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var d = R * c;
-        if(d < 100){
-          l.push(p[i])
-        }
-      }
-      res.send(l)
-    })
-
-
-  
-}
-
 
 router.get('/show', show);
 
@@ -603,19 +573,69 @@ function getPetrolPumps(req, res) {
   })
 };
 
-//req id, fueltype, amount
+router.post('/review', auth, review)
 
-router.post('/initiateTransaction', auth, initiateTransaction);
+function review(req, res){
 
-function initiateTransaction(req, res) {
-  
-  User.findOne({_id: userid})
-  .then(user => {
-      PetrolPumps.findOne({_id:petrolpumpid})
-      .then()
+  Review.findOne({
+    email: req.user.email
+  }).then(user=>{
+    if(!user){
+      const newData= {
+        username: req.user.username,
+        email: req.user.email,
+        rating: req.body.rating,
+      }
+
+      Review.create(newData).then(created=>{
+
+          var d = new Date();
+          var d_new = d.toISOString();
+          const newValues = {
+            $push: {
+              description: {
+                text: req.body.text,
+                ratedAt: d_new              }
+            }
+          }
+
+          Review.updateOne({
+            email: req.user.email
+          }, newValues)
+          .then(updated=>{
+            res.send('Posted Successfully')
+          })
+      })
+    }
+
+    else{        
+
+      Review.updateOne({
+        email: req.user.email
+      }, {$set:{rating:req.body.rating}}).then(updated=>{
+            console.log("updated rating")
+            var d = new Date();
+            var d_new = d.toISOString();
+            const newValues = {
+              $push: {
+                description: {
+                  text: req.body.text,
+                  ratedAt: d_new 
+                }
+              }
+            }
+
+            Review.updateOne({
+              email: req.user.email
+            }, newValues).then(updated2=>{
+                res.send("updated all")
+            })
+        })
+    }
+  }).catch(err=>{
+    res.send(err)
   })
-  .catch(err => {
-    res.error(err)
-  })
+
 }
+
 module.exports = router;

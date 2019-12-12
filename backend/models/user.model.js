@@ -54,7 +54,7 @@ const schema = new Schema({
 
         cost: {type:Number, required:true},
 
-        status: {type:String, enum:['initiated', 'processing', 'completed', 'failed'], required:true},
+        status: {type:String, enum:['initiated', 'processing', 'completed', 'cancelled'], required:true},
 
         pId: {type:String, required:true}, //Petrol station ID
 
