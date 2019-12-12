@@ -72,7 +72,7 @@ class OutletsList extends Component {
     if(this.state.valid) {
       console.log(this.state.valid, this.state.petrolPumps)
       for (var i = 0; i < this.state.petrolPumps.length; i++) {
-        Outlets.push(<Outlet id={i} />)
+        Outlets.push(<Outlet id={i} state={this.state.petrolPumps[i]} />)
       }
       return (
         <div className="list-group list-group-flush">
@@ -90,14 +90,21 @@ class OutletsList extends Component {
 
 class Outlet extends Component {
   render() {
+    const fueltypes = []
+    for(let i=0; i<this.props.state.fuelDetails.length; i++) {
+      if(fueltypes.indexOf(this.props.state.fuelDetails[i].fuel)==-1) {
+        fueltypes.push(this.props.state.fuelDetails[i].fuel)
+        fueltypes.push(" ")
+      }
+    }
     // Backend : Get Outlet Details using id
     return (
       <Fragment>
         <li className="list-group-item list-group-item-action" style={{ "borderRadius": "15px" }}>
           <div className="row" style={{ "paddingTop": "3%", "paddingBottom": "3%" }}>
             <div className="col-6" style={{ "borderRight": "3px solid #fc6037" }}>
-              {/* Backend : Outlet Name */}
-              <center><h1 className="OutletName">Outlet Name</h1></center>
+              
+              <center><h1 className="OutletName">{this.props.state.name}</h1></center>
               <OutletImage />
             </div>
             <div className="col-5">
@@ -106,7 +113,7 @@ class Outlet extends Component {
                   Address :
                   <span className="flex-row-reverse">
                     <i className="fas fa-map-marked-alt"></i>&nbsp;&nbsp;
-                    {/* Backend*/}
+                    {this.props.state.address}
                     abcd
                   </span>
                 </div>
@@ -115,8 +122,8 @@ class Outlet extends Component {
                   Fuel Types Offered :
                   <span className="flex-row-reverse">
                     <i className="fas fa-tint"></i>&nbsp;&nbsp;
-                    {/* Backend*/}
-                    abcd
+                    {fueltypes}
+                    
                   </span>
                 </div>
                 <hr />
@@ -125,17 +132,15 @@ class Outlet extends Component {
                   <span className="flex-row-reverse">
                     <i className="fas fa-tachometer-alt"></i>&nbsp;&nbsp;
                     {/* Backend*/}
-                    abcd
+                    1000
                   </span>
                 </div>
                 <hr />
                 <div className="row  d-flex justify-content-between align-items-center">
-                  Monthly Income :
+                  No. of Pumps :
                   <span className="flex-row-reverse">
-                    <i className="fas fa-rupee-sign"></i>&nbsp;&nbsp;
-                    {/* Backend*/}
-                    abcd
-                    /-
+                    
+                    {this.props.state.pumps.length}
                   </span>
                 </div>
                 <hr />
