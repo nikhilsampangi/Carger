@@ -7,11 +7,21 @@ const auth = require('./middleware_jwt');
 const randomToken = require('random-token');
 
 const User = require('../models/user.model');
-const Outlet = require('../models/petrolStation.model');
+const Pump = require('../models/petrolStation.model')
+const Review = require('../models/feedback.model')
+const cronJob= require('../time_schedule/cancel_order');
+
+
+const PetrolPumps = require('../models/petrolStation.model');
 
 const email = require('./send_email');
 
 const transaction = require('./transaction')
+
+const googleMapsClient = require('@google/maps').createClient({
+  key: 'AIzaSyA7nx22ZmINYk9TGiXDEXGVxghC43Ox6qA',
+  Promise: Promise
+});
 
 router.use(cors());
 
@@ -104,7 +114,8 @@ function login(req, res) {
           // Passwords match
           const payload = {
             _id: user._id,
-            email: user.email
+            email: user.email,
+            username: user.username
           }
           let token = jwt.sign(payload, process.SECRET_KEY, {
             algorithm: 'HS256',
@@ -224,10 +235,10 @@ router.post('/add_money_to_wallet', auth, add_money)
 function add_money(req, res) {
   transaction.pay(req.body, function (err, payment) {
     if (err) {
-      console.log(err)
+      res.send('problem with bank!!!')
     }
     else {
-
+      
       for (let i = 0; i < payment.links.length; i++) {
         if (payment.links[i].rel === 'approval_url') {
           res.json({ link: payment.links[i].href })
@@ -245,7 +256,6 @@ function add_money(req, res) {
           }
         }
       }
-
 
       User.updateOne({
         _id: req.user._id
@@ -333,3 +343,299 @@ function GetQuantity(req, res) {
 module.exports = router;
 
 
+router.post('/buy_fuel', auth, buy_fuel)
+
+function buy_fuel(req, res){
+      
+      User.findOne({
+        email:req.user.email
+      })
+      .then(user=>{
+        if(user){
+          
+        }
+      })
+}
+
+router.post('/gas_trans', auth, gas_trans)
+
+function gas_trans(req, res) {
+  Pump.findOne({
+    name: req.body.name
+  })
+    .then(pump =>{
+      console.log(pump)
+      if(pump){
+        var cost_pl = 0
+        var pump_quan = 0
+        for(let i = 0; i < pump.fuelDetails.length; i++){
+          if(pump.fuelDetails[i].fuel === req.body.type){   
+            cost_pl = pump.fuelDetails[i].price
+            pump_quan = pump.fuelDetails[i].quantity
+          }
+        }
+        if(req.body.quantity < pump_quan){
+          User.findOne({
+            _id: req.user._id
+          })
+            .then(user =>{
+              if(user){
+                if(parseFloat(user.balance) >= parseFloat(req.body.total)){
+                  total_cost = cost_pl * req.body.quantity
+                  if(total_cost == req.body.total){
+                    var x = parseFloat(user.balance) - total_cost
+                    const newVal={
+                      $set:{
+                          balance: x
+                      }
+                    }
+                    User.updateOne({
+                      _id: user._id
+                    }, newVal)
+                      .then(y =>{
+                        if(y.ok == 1){
+                          var tid = Math.random().toString(36).substr(2, 9);
+                          var f = new Date();
+                          var z = f.toISOString();
+                          const newValues= {
+                            $push:{
+                              eWalletTransactions: {
+                                transactionId: tid,
+                                status: 'completed',
+                                type: 'debit',
+                                createdAt: z,
+                                amount: total_cost
+                              }
+                            }
+                          }
+                          User.updateOne({
+                            _id: req.user._id
+                          }, newValues)
+                          .then(m =>{
+                            console.log(m)
+                          })
+                          .catch(err => {
+                            console.log(err)
+                          })
+
+                          var gid = Math.random().toString(36).substr(2, 9);
+                          var j = new Date();
+                          var k = j.toISOString();
+                          var ot  = Math.floor(100000 + Math.random() * 900000)
+                          const n= {
+                            $push:{
+                              gasTransactions: {
+                                transactionId: gid,
+                                fuelType: req.body.type,
+                                fuelPrice: cost_pl,
+                                quantity: req.body.quantity,
+                                cost: total_cost,
+                                status: 'initiated',
+                                pId: req.body.name,
+                                createdAt: k,
+                                eWalletTransactionId: tid,
+                                otp: ot
+                              }
+                            }
+                          }
+                          User.updateOne({
+                            _id: req.user._id
+                          }, n)
+                          .then(w =>{
+                            const data= {
+                              date: j,
+                              user: req.user._id,
+                              gasid: gid
+                            }
+                            cronJob(data)
+                            
+                            var count= String(parseFloat(pump.pendingTransactions)+1)
+                            var estd = String(Math.ceil(parseFloat(count)/pump.pumps.length)*5)+"minutes"
+                            const newData={
+                              $set:{
+                                pendingTransactions: count,
+                                estimatedTime: estd
+                              }
+                            }
+
+                            Pump.updateOne({
+                              name: req.body.name
+                            }, newData).then(r=>{console.log("updated estimated time")})
+                    
+                            res.send('Updated')
+                          })
+                          .catch(err => {
+                            console.log(err)
+                          })
+                              }
+                            })
+                        }
+                  else{
+                    res.send('Access Denied')
+                  }
+                }
+                else{
+                  res.send('Not enough wallet balance.Please add money to wallet')
+                }
+              }
+              else{
+                res.send('no user found!!!')
+              }
+            })
+            .catch(err=>{
+              res.json({error:err})
+            })
+          } 
+        else{
+          res.send('Not enough fuel in this outlet')
+        }
+      }
+    })
+    .catch(err=>{
+      res.json({error:err})
+    })
+}
+
+
+router.post('/gmap', gmap)
+
+async function gmap(req, res) {
+  const lat = req.body.lat
+  const lng = req.body.lng
+  var us = []
+  lis = []
+  await Pump.find({})
+    .then(u => {
+      us = u
+  })
+  for(let i = 0; i < us.length; i++){
+    d = us[i].latitude + ',' + us[i].longitude
+    await googleMapsClient.directions({
+      origin: lat + ',' + lng,
+      destination: d,
+      units: 'metric'
+    })
+    .asPromise()
+    .then(response => {
+      d = response.json.routes[0].legs[0].distance.text
+      x = d.split(" ")
+      var value = us[i]
+      value["distance"] = parseFloat(x[0]) 
+      lis.push(value)
+      console.log(value.distance)
+      console.log(lis)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+  lis.sort((a,b)=>(a.distance < b.distance) ? 1: -1)
+  res.send(lis)
+}
+
+
+router.post('/pending_trans', auth, pending_trans)
+
+function pending_trans(req, res) {
+  list = []
+  User.findOne({
+    _id: req.user._id
+  })
+    .then(user =>{
+      for(let i=0; i < user.gasTransactions.length; i++){
+        if(user.gasTransactions[i].status == 'initiated'){
+          list.push(user.gasTransactions[i])
+        }
+      }
+      res.send(list)
+    })
+}
+
+router.get('/show', show);
+
+function show(req, res) {
+  User.findOne({
+  })
+  .then(user => {
+    res.send(user)
+  })
+}
+
+router.get('/getPetrolPumps', getPetrolPumps);
+
+function getPetrolPumps(req, res) {
+  PetrolPumps.find({})
+  .then(petrolpumps => {
+    res.send(petrolpumps)
+  })
+  .catch(err => {
+    res.error(err)
+  })
+};
+
+router.post('/review', auth, review)
+
+function review(req, res){
+
+  Review.findOne({
+    email: req.user.email
+  }).then(user=>{
+    if(!user){
+      const newData= {
+        username: req.user.username,
+        email: req.user.email,
+        rating: req.body.rating,
+      }
+
+      Review.create(newData).then(created=>{
+
+          var d = new Date();
+          var d_new = d.toISOString();
+          const newValues = {
+            $push: {
+              description: {
+                text: req.body.text,
+                ratedAt: d_new              }
+            }
+          }
+
+          Review.updateOne({
+            email: req.user.email
+          }, newValues)
+          .then(updated=>{
+            res.send('Posted Successfully')
+          })
+      })
+    }
+
+    else{        
+
+      Review.updateOne({
+        email: req.user.email
+      }, {$set:{rating:req.body.rating}}).then(updated=>{
+            console.log("updated rating")
+            var d = new Date();
+            var d_new = d.toISOString();
+            const newValues = {
+              $push: {
+                description: {
+                  text: req.body.text,
+                  ratedAt: d_new 
+                }
+              }
+            }
+
+            Review.updateOne({
+              email: req.user.email
+            }, newValues).then(updated2=>{
+                res.send("updated all")
+            })
+        })
+    }
+  }).catch(err=>{
+    res.send(err)
+  })
+
+}
+
+module.exports = router;

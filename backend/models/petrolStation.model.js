@@ -14,8 +14,13 @@ const schema = new Schema({
         shutdown: {type:Boolean, default:false},
         pumptype: {type:String, required:true}
     }],
+    pendingTransactions: {type:String, default: "0"},
+    estimatedTime: {type:String},
     address: {type:String, required:true},
+    city: {type:String},
     emergencyShutdown: {type:Boolean, default:false},
+    latitude: {type:String},
+    longitude: {type:String},
 });
 
 schema.set('toJSON', {virtuals:true});

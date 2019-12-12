@@ -28,78 +28,6 @@ router.post('/register', register_admin)
 // }
 
 
-// function register(req, res) {
-//     const adminData = {
-//         name:req.body.username,
-//         hashedPassword: req.body.hashedPassword,
-//         email: req.body.email,
-//     }
-
-//     Admin.findOne({
-//         name: req.body.superAdmin,
-//         isAdmin: true
-//     })
-//     .then(admin => {
-//         if(admin) {
-//             Admin.findOne({
-//                 email: req.body.email
-//             }).then(user=>{
-//                 if(!user){
-//                     bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
-//                         adminData.hashedPassword = hash
-//                         Admin.create(adminData)
-//                         .then((admin) => {
-//                             const gen_token = randomToken(55);
-//                             email.send_verification_token(gen_token, admin.email);
-//                             var newValues = { $set: {token: gen_token}};
-
-//                             Admin.updateOne({
-//                                 _id: admin._id
-//                             }, newValues)
-//                             .then(admin => {
-//                                 if(admin) {
-//                                     console.log("Updated token")
-//                                 }
-//                                 else {
-//                                     console.log({error:"Token not updated"})
-//                                 }
-//                             })
-//                             .catch(err => {
-//                                 console.log('error:' + err.message)
-//                             });
-
-//                             res.json({status: "Registered and a link is sent to your to get email verified"});
-//                         })
-//                         .catch(err => {
-//                             var arr= Object.keys(err['errors'])
-//                             var errors= []
-//                             for(i in arr){
-//                             errors.push(err['errors'][arr[i]].message);
-//                             }
-//                             console.log(errors)
-//                             res.json({error: errors})
-//                         })
-//                     })
-
-//                 }
-//                 else{
-//                     res.json({error: "admin already exist"})
-//                 }
-//             }).catch(err => {
-//                 var arr= Object.keys(err['errors'])
-//                 var errors= []
-//                 for(i in arr){
-//                 errors.push(err['errors'][arr[i]].message);
-//                 }
-//                 console.log(errors)
-//                 res.json({error: errors})
-//             })   
-//         }
-//         else {
-//             res.json({error: 'Admin not a super user'})
-//         }
-//     })
-// }
 
 // router.post('/addsuperuser', addSuperUser);
 
@@ -296,10 +224,10 @@ function addStation(req, res) {
     name: req.body.name,
     fuelDetails: req.body.fuelDetails,
     address: req.body.address,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude,
     pumps: []
   }
-
-
   // res.send('done')
 
   // res.body.fuelDetails is array of objects
@@ -314,7 +242,7 @@ function addStation(req, res) {
         })
           .then(petrol => {
             if (!petrol) {
-              tempid = 0
+              tempid = 1
               let fueltype = ["Petrol", "Diesel", "CNG"];
               let pumpcount = [req.body.petrolpumps, req.body.dieselpumps, req.body.cngpumps];
               for (i = 0; i < pumpcount.length; i++) {
@@ -328,7 +256,14 @@ function addStation(req, res) {
               }
               console.log(petrolstationdata)
               PetrolStation.create(petrolstationdata)
-              res.send('Petrol Station added')
+              .then(added=>{
+                console.log(added);
+                res.send('Petrol Station added')
+              })
+              .catch(err => {
+                console.log(err);
+                res.send('Petrol Station failed to add')
+              });
             } else {
               res.json({
                 error: "Petrol Station already exists"
@@ -357,7 +292,7 @@ function getpetrolpump(req, res) {
   })
     .then(petrol => {
       console.log(petrol)
-      res.send('valid')
+      res.send(petrol)
     })
 }
 

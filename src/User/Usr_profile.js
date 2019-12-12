@@ -4,11 +4,35 @@ import Navbar from "./Navbar"
 import { ReactComponent as Wallet } from '../assets/wallet.svg';
 import { ReactComponent as Grad_Strip } from '../assets/gradient_strip.svg';
 import Cookies from "js-cookie";
+import { profile } from "../authentication/userFunctions"
 
 export default class User_profile extends Component {
   constructor(props) {
     super(props);
-    this.state = { authenticated: true }
+    this.state = { authenticated: true, username:'', wallet:'', transactions:[] }
+  }
+
+  handleprofile(event) {
+    let prof;
+    if(Cookies.get('usertoken')) {
+      prof = {
+        token: Cookies.get('usertoken')
+      }
+    }
+    console.log(Cookies.get('usertoken'))
+    profile(prof)
+    .then(res => {
+      console.log(res)
+      this.setState({
+        username: res.data.username,
+        wallet: res.data.balance,
+        transactions: res.data.eWalletTransactions
+      })
+    })
+  }
+
+  componentDidMount(event) {
+    this.handleprofile();
   }
 
   logOut(event) {
@@ -42,15 +66,15 @@ export default class User_profile extends Component {
                   <div className="card-body">
                     <div className="card-title row">
                       <span style={{ "fontFamily": "Josefin Sans, sans-serif", "fontSize": "2em" }} className="col-10">
-                        Hello User.Name!!
+                        Hello {this.state.username}!!
                       </span>
                       <button className="btn btn-outline-dark col-2" onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log Out</button>
                     </div>
                     <br /><br />
                     <div className="row">
                       {/* <Wallet_Balance /> */}
-                      <WalletBalance />
-                      <Recent_Transactions />
+                      <WalletBalance wallet={this.state.wallet}/>
+                      <Recent_Transactions transactions={this.state.transactions}/>
                     </div>
                     <div className="row">
 
@@ -84,7 +108,7 @@ class WalletBalance extends Component {
           <Wallet style={{ "height": "35vh" }} />
           &nbsp;&nbsp;&nbsp;
         <span style={{ "fontSize": "3em" }}>
-            :&nbsp;69
+            :&nbsp;{this.props.wallet}
           {/* &nbsp;&nbsp;<i className="fa fa-coins" /> */}
           </span>
         </div>
@@ -125,10 +149,10 @@ class Recent_Transactions extends Component {
     {/* backend: send array of all gas transactions here */ }
     var gasTrans = []
     // var len = gasTrans.length // comment below one and uncomment this
-    var len = 10 // hardcoded for now
+    var len = this.props.transactions.length // hardcoded for now
     var render_tr = []
     for (var i = 0; i < len; i++) {
-      render_tr.push(<Transaction />);// Add required props here
+      render_tr.push(<Transaction transaction={this.props.transactions[i]}/>);// Add required props here
       render_tr.push(<hr />);
     }
     return (
@@ -148,10 +172,10 @@ class Transaction extends Component {
     return (
       <div className="row d-flex justify-content-between align-items-center">
         {/* send through props */}
-        transaction.details
+        {this.props.transaction.amount}
       <span className="flex-row-reverse">
           {/* send through props */}
-          transaction.time
+          {this.props.transaction.updatedAt}
       </span>
       </div>
     )
