@@ -118,7 +118,20 @@ class StationFuelStatistics extends Component {
     // x = x.fuelDetails[y].fuel
     let y = this.props.fueltype
     // console.log("x", x.fuelDetails[y].fuel)
-    console.log('y', y)
+    const arr = ['Diesel', 'Petrol', 'CNG']
+    let workingcount = 0;
+    let totalcount = 0;
+    for(let i=0; i<this.props.tempstate.pumps.length; i++) {
+      console.log(this.props.tempstate.pumps[i].pumptype, arr[this.props.fueltype])
+      if(this.props.tempstate.pumps[i].pumptype==arr[this.props.fueltype]) {
+        if(!this.props.tempstate.pumps[i].shutdown) {
+          workingcount++;
+        }
+        totalcount++;
+      }
+    }
+
+    console.log('pops', this.props)
     let fname = this.props.fueltype === 0 ? "Diesel" : (this.props.fueltype === 1 ? "Petrol" : "Cng")
     // let quantity = this.props.tempstate.fuelDetails[this.props.fueltype].quantity
     return (
@@ -158,8 +171,8 @@ class StationFuelStatistics extends Component {
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                   Operational Pumps
                 <span className="flex-row-reverse">
-                    {/* backend */}
-                    #working / #total
+                    {workingcount}/{totalcount}
+                    {/* #working / #total */}
                   </span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
