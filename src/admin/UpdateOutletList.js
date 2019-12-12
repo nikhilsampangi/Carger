@@ -1,35 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import Cookies from 'js-cookie';
 import { ReactComponent as OutletImage } from "../assets/outlet.svg";
-import { addpetrolstation } from '../authentication/adminFunctions';
+import { addpetrolstation, getpetrolstations } from '../authentication/adminFunctions';
 
 export default class UpdateOutletList extends Component {
   constructor(props) {
     super(props);
     this.state = { addOutletSwitch: 0 }
   }
-
-  // handleSubmit(event) {
-  //   if(Cookies.get('usertoken')){
-  //     const state = this.props.state;
-  //     console.log(state)
-  //     const outlet= {
-  //         outletName: state.outletName,
-  //         outletAddress: state.outletAddress,
-  //         dieselCapacity: state.dieselCapacity,
-  //         petrolCapacity: state.petrolCapacity,
-  //         cngCapacity: state.cngCapacity,
-  //         petrolPumps: state.petrolPumps,
-  //         dieselPumps: state.dieselPumps,
-  //         cngPumps: state.cngPumps,
-  //         token: Cookies.get('usertoken')
-  //     }
-  //     console.log(outlet);
-  //   } 
-  //   else{
-  //     console.log('please login');
-  //   }
-  // }
 
   render() {
     return (
@@ -61,16 +39,52 @@ export default class UpdateOutletList extends Component {
 }
 
 class OutletsList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {petrolPumps: null, valid: false}
+  }
+
+  handlegetpetrolstations(event) {
+    const details = {
+      token: Cookies.get('usertoken')
+    };
+    
+    getpetrolstations(details)
+    .then(res => {
+      console.log(res)
+      this.setState({petrolPumps:res.data, valid: true}, () => {
+        console.log('state', this.state)
+      })
+    })
+    .catch(err => {
+      console.log("outlet list error", err)
+    })
+  }
+
+  componentDidMount() {
+    console.log('in component did mount state', this.state)
+    this.handlegetpetrolstations()
+  }
+
   render() {
     var Outlets = []
-    for (var i = 0; i < this.props.outletcount; i++) {
-      Outlets.push(<Outlet id={i} />)
+    console.log(this.state.valid)
+    if(this.state.valid) {
+      console.log(this.state.valid, this.state.petrolPumps)
+      for (var i = 0; i < this.state.petrolPumps.length; i++) {
+        Outlets.push(<Outlet id={i} />)
+      }
+      return (
+        <div className="list-group list-group-flush">
+          {Outlets}
+        </div>
+      )
     }
-    return (
-      <div className="list-group list-group-flush">
-        {Outlets}
-      </div>
-    )
+    else {
+      return (
+        <div>Waiting for server</div>
+      )
+    }
   }
 }
 
@@ -143,7 +157,7 @@ class Outlet extends Component {
 class AddOutletForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { showd: 0, showp: 0, showc: 0, outletName: '', outletAddress: '', dieselCapacity: '', petrolCapacity: '', cngCapacity: '', petrolPumps: '', dieselPumps: '', cngPumps: '' };
+    this.state = { showd: 0, showp: 0, showc: 0, outletName: '', outletAddress: '', dieselCapacity: '', petrolCapacity: '', cngCapacity: '', petrolPumps: '', dieselPumps: '', cngPumps: '', petrolCost: null, dieselCost: null, cngCost: null };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -156,12 +170,27 @@ class AddOutletForm extends Component {
 
   handleSubmit(event) {
     if (Cookies.get('usertoken')) {
+      // const fuelDetails = {dieselCapacity: this.state.dieselCapacity,
+      //   petrolCapacity: this.state.petrolCapacity,
+      //   cngCapacity: this.state.cngCapacity,}
+      const fuelDetails = [{
+        fuel: 'Petrol',
+        quantity: this.state.petrolCapacity,
+        price: this.state.petrolCost
+      }, {
+        fuel: 'Diesel',
+        quantity: this.state.dieselCapacity,
+        price: this.state.dieselCost
+      }, {
+        fuel: 'CNG',
+        quantity: this.state.cngCapacity,
+        price: this.state.cngCost
+      }]
+
       const outlet = {
         outletName: this.state.outletName,
         outletAddress: this.state.outletAddress,
-        dieselCapacity: this.state.dieselCapacity,
-        petrolCapacity: this.state.petrolCapacity,
-        cngCapacity: this.state.cngCapacity,
+        fuelDetails: fuelDetails,
         petrolPumps: this.state.petrolPumps,
         dieselPumps: this.state.dieselPumps,
         cngPumps: this.state.cngPumps,
@@ -290,7 +319,15 @@ class AddOutletForm extends Component {
             <div className="col"><input type="text" className="form-control" placeholder="CNG Pumps" value={this.state.cngPumps} name='cngPumps' onChange={this.handleChange} /></div>
           </div>
           <br />
+
           <div className="form-row">
+            <div className="col">Cost</div>
+            <div className="col"><input type="text" className="form-control" placeholder="Diesel" value={this.state.dieselCost} name='dieselCost' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="Petrol" value={this.state.petrolCost} name='petrolCost' onChange={this.handleChange} /></div>
+            <div className="col"><input type="text" className="form-control" placeholder="CNG" value={this.state.cngCost} name='cngCost' onChange={this.handleChange} /></div>
+          </div>
+          <br/>
+          {/* <div className="form-row">
             <div className="col">
               <label>Manager's Username</label>
               <input type="text" className="form-control" />
@@ -300,7 +337,7 @@ class AddOutletForm extends Component {
               <input type="text" className="form-control" />
             </div>
           </div>
-          <br />
+          <br /> */}
           <div className="form-row">
             <div className="col"></div>
             <button className="btn btn-outline-dark btn-block col-10" onClick={this.handleSubmit}>

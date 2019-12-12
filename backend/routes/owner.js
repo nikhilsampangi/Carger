@@ -233,7 +233,7 @@ function addStation(req, res) {
   // res.body.fuelDetails is array of objects
 
   Admin.findOne({
-    email: req.user.email
+    _id: req.user._id
   })
     .then(admin => {
       if (admin) {
@@ -296,5 +296,28 @@ function getpetrolpump(req, res) {
     })
 }
 
+
+router.get('/getpetrolstations', auth, getPetrolStations);
+
+function getPetrolStations(req, res) {
+  Admin.findOne({
+    _id: req.user._id
+  })
+  .then(admin => {
+    // res.send(admin)
+    if(admin){
+        PetrolStation.find({})
+      .then(petrolstations => {
+        res.send(petrolstations)
+      })
+      .catch(err => {
+        res.send(err)
+      })
+    }
+  })
+  .catch(err => {
+    res.send(err)
+  })
+}
 
 module.exports = router;

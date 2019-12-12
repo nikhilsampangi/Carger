@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import Dashboard from "../Staff/Dashboard";
+// import Dashboard from "../Staff/Dashboard";
 import PumpStatistics from "../Staff/PumpStatistics";
 
 export default class OutletOverview extends Component {
@@ -33,7 +33,6 @@ export default class OutletOverview extends Component {
           <div className="col" />
         </div>
         <br />
-        <Dashboard />
         <br /><br /><br />
         <PumpStatistics pumpcount={[3, 4, 3]} />
       </Fragment>
