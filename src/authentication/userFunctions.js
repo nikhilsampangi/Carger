@@ -74,6 +74,7 @@ export const pay= add_money=> {
 }
 
 export const profile= prof => {
+    
     return axios.get('user/profile', {headers: {'Authorization': prof.token}})
     .then(res => {
         if (res.data.error) {

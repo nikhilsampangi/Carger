@@ -9,6 +9,8 @@ import ScheduleDelivery from "./ScheduleDelivery";
 import RevenueStatistics from "../Staff/RevenueStatistics";
 import UpdateOutletList from "./UpdateOutletList";
 import CustomerFeedback from "../Staff/CustomerFeedback";
+import Cookies from "js-cookie";
+
 
 function change_bg(cls) {
   document
@@ -23,6 +25,12 @@ export default class Adm_home extends Component {
     this.state = {
       Tab: 1
     }
+  }
+
+  logOut(event) {
+    // event.preventDefault()
+    Cookies.remove('usertoken')
+    // this.setState({ authenticated: false })
   }
 
   render() {
@@ -64,7 +72,7 @@ export default class Adm_home extends Component {
           </ul> */}
           {/* backend: log out */}
           <Link className="flex-row-reverse" to="/">
-            <h5 style={{ "color": "white", "marginRight": "1.7vw" }}><i className="fas fa-sign-out-alt"></i>&nbsp;Log out</h5>
+            <h5 style={{ "color": "white", "marginRight": "1.7vw" }} onClick={this.logOut.bind(this)}><i className="fas fa-sign-out-alt"></i>&nbsp;Log out</h5>
           </Link>
         </nav>
         <div>
