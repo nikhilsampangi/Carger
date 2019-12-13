@@ -53,7 +53,7 @@ class Feedback extends Component {
                   <div className="card-body">
                     <h2 className="card-title">Feedback:</h2>
                     <p className="card-text">
-                      " backend:send feedback (if exsists) here "
+                      No Feedback Given
                     </p>
                   </div>
                 </div>

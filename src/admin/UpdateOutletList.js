@@ -41,24 +41,24 @@ export default class UpdateOutletList extends Component {
 class OutletsList extends Component {
   constructor(props) {
     super(props);
-    this.state = {petrolPumps: null, valid: false}
+    this.state = { petrolPumps: null, valid: false }
   }
 
   handlegetpetrolstations(event) {
     const details = {
       token: Cookies.get('usertoken')
     };
-    
+
     getpetrolstations(details)
-    .then(res => {
-      console.log(res)
-      this.setState({petrolPumps:res.data, valid: true}, () => {
-        console.log('state', this.state)
+      .then(res => {
+        console.log(res)
+        this.setState({ petrolPumps: res.data, valid: true }, () => {
+          console.log('state', this.state)
+        })
       })
-    })
-    .catch(err => {
-      console.log("outlet list error", err)
-    })
+      .catch(err => {
+        console.log("outlet list error", err)
+      })
   }
 
   componentDidMount() {
@@ -69,7 +69,7 @@ class OutletsList extends Component {
   render() {
     var Outlets = []
     console.log(this.state.valid)
-    if(this.state.valid) {
+    if (this.state.valid) {
       console.log(this.state.valid, this.state.petrolPumps)
       for (var i = 0; i < this.state.petrolPumps.length; i++) {
         Outlets.push(<Outlet id={i} state={this.state.petrolPumps[i]} />)
@@ -91,8 +91,8 @@ class OutletsList extends Component {
 class Outlet extends Component {
   render() {
     const fueltypes = []
-    for(let i=0; i<this.props.state.fuelDetails.length; i++) {
-      if(fueltypes.indexOf(this.props.state.fuelDetails[i].fuel)==-1) {
+    for (let i = 0; i < this.props.state.fuelDetails.length; i++) {
+      if (fueltypes.indexOf(this.props.state.fuelDetails[i].fuel) == -1) {
         fueltypes.push(this.props.state.fuelDetails[i].fuel)
         fueltypes.push(" ")
       }
@@ -103,7 +103,7 @@ class Outlet extends Component {
         <li className="list-group-item list-group-item-action" style={{ "borderRadius": "15px" }}>
           <div className="row" style={{ "paddingTop": "3%", "paddingBottom": "3%" }}>
             <div className="col-6" style={{ "borderRight": "3px solid #fc6037" }}>
-              
+
               <center><h1 className="OutletName">{this.props.state.name}</h1></center>
               <OutletImage />
             </div>
@@ -114,7 +114,6 @@ class Outlet extends Component {
                   <span className="flex-row-reverse">
                     <i className="fas fa-map-marked-alt"></i>&nbsp;&nbsp;
                     {this.props.state.address}
-                    abcd
                   </span>
                 </div>
                 <hr />
@@ -123,7 +122,7 @@ class Outlet extends Component {
                   <span className="flex-row-reverse">
                     <i className="fas fa-tint"></i>&nbsp;&nbsp;
                     {fueltypes}
-                    
+
                   </span>
                 </div>
                 <hr />
@@ -139,7 +138,7 @@ class Outlet extends Component {
                 <div className="row  d-flex justify-content-between align-items-center">
                   No. of Pumps :
                   <span className="flex-row-reverse">
-                    
+
                     {this.props.state.pumps.length}
                   </span>
                 </div>
@@ -196,9 +195,9 @@ class AddOutletForm extends Component {
         outletName: this.state.outletName,
         outletAddress: this.state.outletAddress,
         fuelDetails: fuelDetails,
-        petrolPumps: this.state.petrolPumps,
-        dieselPumps: this.state.dieselPumps,
-        cngPumps: this.state.cngPumps,
+        petrolpumps: this.state.petrolPumps,
+        dieselpumps: this.state.dieselPumps,
+        cngpumps: this.state.cngPumps,
         token: Cookies.get('usertoken')
       }
       console.log(outlet.token)
@@ -331,7 +330,7 @@ class AddOutletForm extends Component {
             <div className="col"><input type="text" className="form-control" placeholder="Petrol" value={this.state.petrolCost} name='petrolCost' onChange={this.handleChange} /></div>
             <div className="col"><input type="text" className="form-control" placeholder="CNG" value={this.state.cngCost} name='cngCost' onChange={this.handleChange} /></div>
           </div>
-          <br/>
+          <br />
           {/* <div className="form-row">
             <div className="col">
               <label>Manager's Username</label>

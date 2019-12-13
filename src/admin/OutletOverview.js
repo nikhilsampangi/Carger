@@ -34,6 +34,7 @@ export default class OutletOverview extends Component {
                   <option value="1">Petrol Station 1</option>
                   <option value="2">Petrol Station 2</option>
                   <option value="3">Petrol Station 3</option>
+                  <option value="3">Petrol Station 4</option>
                 </select>
               </div>
             </div>
