@@ -203,6 +203,7 @@ function login(req, res) {
           res.json({
             error: 'Incorrect Password'
           })
+          console.log("Failed, password is ",req.body.hashedPassword)
         }
       } else {
         res.json({

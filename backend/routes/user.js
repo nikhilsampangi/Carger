@@ -27,6 +27,8 @@ router.use(cors());
 
 process.SECRET_KEY = 'secret';
 
+
+
 router.post('/register', register)
 
 function register(req, res) {
@@ -79,12 +81,12 @@ function register(req, res) {
                 errors.push(err['errors'][arr[i]].message);
               }
               console.log(errors)
-              res.json({ error: errors });
+              res.status(400).json({ error: errors });
             })
         })
       }
       else {
-        res.json({ error: 'user already exist' });
+        res.status(400).json({ error: 'user already exist' });
       }
     })
     .catch(err => {
@@ -94,11 +96,13 @@ function register(req, res) {
         errors.push(err['errors'][arr[i]].message);
       }
       console.log(errors)
-      res.json({ error: errors });
+      res.status(401).json({ error: errors });
     })
 
 
 }
+
+
 
 
 router.post('/login', login)
@@ -124,17 +128,19 @@ function login(req, res) {
           res.send(token)
         } else {
           // Passwords don't match
-          res.json({ error: 'Incorrect Password' })
+          res.status(401).json({ error: 'Incorrect Password' })
         }
       } else {
-        res.json({ error: 'User does not exist' })
+        res.status(401).json({ error: 'User does not exist' })
       }
     })
     .catch(err => {
-      res.send('error: ' + err)
+      res.status(400).send('error: ' + err)
     });
 
 }
+
+
 
 
 router.get('/profile', auth, profile)
@@ -149,14 +155,16 @@ function profile(req, res) {
         res.send(user)
       }
       else {
-        res.json({ error: "user does not exist" })
+        res.status(404).json({ error: "user does not exist" })
       }
     })
     .catch(err => {
-      res.json('error:' + err)
+      res.status(400).json('error:' + err)
     });
 
 }
+
+
 
 
 router.delete('/delete', delete_user)
@@ -172,14 +180,16 @@ function delete_user(req, res) {
         res.send("user deleted")
       }
       else {
-        res.json({ error: "not deleted" })
+        res.status(404).json({ error: "not deleted" })
       }
     })
     .catch(err => {
-      res.json('error:' + err)
+      res.status(400).json('error:' + err)
     });
 
 }
+
+
 
 router.post('/get_verified', auth, resend_token)
 
@@ -202,6 +212,8 @@ function resend_token(req, res) {
     });
 
 }
+
+
 
 
 router.get('/verify/:token', confirm_email)
@@ -230,12 +242,15 @@ function confirm_email(req, res) {
 
 }
 
+
+
+
 router.post('/add_money_to_wallet', auth, add_money)
 
 function add_money(req, res) {
   transaction.pay(req.body, function (err, payment) {
     if (err) {
-      res.send('problem with bank!!!')
+      res.status(502).send('problem with bank!!!')
     }
     else {
       
@@ -277,6 +292,9 @@ function add_money(req, res) {
   });
 }
 
+
+
+
 router.get('/success', success)
 
 function success(req, res) {
@@ -289,7 +307,7 @@ function success(req, res) {
     console.log(response)
     if (err) {
       console.log(err)
-      res.send(err)
+      res.status(402).send(err)
     }
     else {
       const newValues = {
@@ -311,7 +329,7 @@ function success(req, res) {
 
           transaction.update_balance(data)
 
-          res.redirect('http://localhost:3000/#/User_Wallet_Success')
+          res.send('updated wallet')
         })
         .catch(err => {
           console.log(err)
@@ -322,12 +340,17 @@ function success(req, res) {
 }
 
 
+
+
 router.get('/cancel', cancel)
 
 function cancel(req, res) {
   console.log(req.query);
   res.send('Cancelled');
 }
+
+
+
 
 router.get('/fuelQuantity', GetQuantity)
 
@@ -340,7 +363,7 @@ function GetQuantity(req, res) {
   )
 }
 
-module.exports = router;
+
 
 
 router.post('/buy_fuel', auth, buy_fuel)
@@ -357,9 +380,13 @@ function buy_fuel(req, res){
       })
 }
 
+
+
+
 router.post('/gas_trans', auth, gas_trans)
 
 function gas_trans(req, res) {
+  console.log(req)
   Pump.findOne({
     name: req.body.name
   })
@@ -374,7 +401,8 @@ function gas_trans(req, res) {
             pump_quan = pump.fuelDetails[i].quantity
           }
         }
-        if(req.body.quantity < pump_quan){
+        console.log(req.body.quantity , pump_quan)
+        if(parseFloat(req.body.quantity) < pump_quan){
           User.findOne({
             _id: req.user._id
           })
@@ -471,37 +499,42 @@ function gas_trans(req, res) {
                             })
                         }
                   else{
-                    res.send('Access Denied')
+                    res.status(401).send('Access Denied')
                   }
                 }
                 else{
-                  res.send('Not enough wallet balance.Please add money to wallet')
+                  res.status(402).send('Not enough wallet balance.Please add money to wallet')
                 }
               }
               else{
-                res.send('no user found!!!')
+                res.status(404).send('no user found!!!')
               }
             })
             .catch(err=>{
-              res.json({error:err})
+              res.status(403).json({error:err})
             })
           } 
         else{
-          res.send('Not enough fuel in this outlet')
+          res.status(402).send('Not enough fuel in this outlet')
         }
       }
     })
     .catch(err=>{
-      res.json({error:err})
+      res.status(401).json({error:err})
     })
 }
 
 
-router.post('/gmap', gmap)
+
+
+router.post('/gmap', auth, gmap)
 
 async function gmap(req, res) {
+  
   const lat = req.body.lat
   const lng = req.body.lng
+
+  console.log("LAT = ",lat,"Long = :",lng)
   var us = []
   lis = []
   await Pump.find({})
@@ -520,7 +553,8 @@ async function gmap(req, res) {
       d = response.json.routes[0].legs[0].distance.text
       x = d.split(" ")
       var value = us[i]
-      value["distance"] = parseFloat(x[0]) 
+      // console.log("FIND THE DISTANCE VALUE HERE", x)
+      value["distance"] = parseFloat(x[0].replace(",","")) 
       lis.push(value)
       console.log(value.distance)
       console.log(lis)
@@ -529,9 +563,12 @@ async function gmap(req, res) {
       console.log(err);
     });
   }
-  lis.sort((a,b)=>(a.distance < b.distance) ? 1: -1)
+  // console.log("SOMEBODY HELP ME PLS", lis[0].distance)
+  lis.sort((a,b)=>(a.distance > b.distance) ? 1: -1)
   res.send(lis)
 }
+
+
 
 
 router.post('/pending_trans', auth, pending_trans)
@@ -551,6 +588,9 @@ function pending_trans(req, res) {
     })
 }
 
+
+
+
 router.get('/show', show);
 
 function show(req, res) {
@@ -561,6 +601,9 @@ function show(req, res) {
   })
 }
 
+
+
+
 router.get('/getPetrolPumps', getPetrolPumps);
 
 function getPetrolPumps(req, res) {
@@ -569,9 +612,12 @@ function getPetrolPumps(req, res) {
     res.send(petrolpumps)
   })
   .catch(err => {
-    res.error(err)
+    res.status(400).error(err)
   })
 };
+
+
+
 
 router.post('/review', auth, review)
 
@@ -637,5 +683,6 @@ function review(req, res){
   })
 
 }
+
 
 module.exports = router;

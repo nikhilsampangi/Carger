@@ -5,9 +5,9 @@ const Pump = require('../models/petrolStation.model');
 function cronJob(data){   
 
     var currDate= data.date;
-    var taskTime= currDate.setSeconds(currDate.getSeconds() + 30);
+    var taskTime= currDate.setSeconds(currDate.getSeconds() + 7200);
 
-    var task = cron.schedule('*/5 * * * * *', () => {
+    var task = cron.schedule('*/5 * * * *', () => {
         if(new Date().getTime() > taskTime){
             User.findOne({
                 _id: data.user

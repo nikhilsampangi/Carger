@@ -15,7 +15,7 @@ const schema = new Schema({
         pumptype: {type:String, required:true}
     }],
     pendingTransactions: {type:String, default: "0"},
-    estimatedTime: {type:String},
+    estimatedTime: {type:String, default:"5 minutes"},
     address: {type:String, required:true},
     city: {type:String},
     emergencyShutdown: {type:Boolean, default:false},

@@ -13,8 +13,8 @@ function pay(details, callback) {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:8008/user/success",
-            "cancel_url": "http://localhost:8008/user/cancel"
+            "return_url": "http://192.168.43.177:8008/user/success",
+            "cancel_url": "http://192.168.43.177:8008/user/cancel"
         },
         "transactions": [{
             "item_list": {
