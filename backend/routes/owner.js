@@ -7,6 +7,7 @@ const auth = require('./middleware_jwt');
 const randomToken = require('random-token');
 
 const Admin = require('../models/owner.model');
+const PetrolStation = require('../models/petrolStation.model')
 const email = require('./send_email')
 
 router.use(cors());
@@ -27,188 +28,194 @@ router.post('/register', register_admin)
 // }
 
 
-// function register(req, res) {
-//     const adminData = {
-//         name:req.body.username,
-//         hashedPassword: req.body.hashedPassword,
-//         email: req.body.email,
-//     }
 
-//     Admin.findOne({
-//         name: req.body.superAdmin,
-//         isAdmin: true
-//     })
-//     .then(admin => {
-//         if(admin) {
-//             Admin.findOne({
-//                 email: req.body.email
-//             }).then(user=>{
-//                 if(!user){
-//                     bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
-//                         adminData.hashedPassword = hash
-//                         Admin.create(adminData)
-//                         .then((admin) => {
-//                             const gen_token = randomToken(55);
-//                             email.send_verification_token(gen_token, admin.email);
-//                             var newValues = { $set: {token: gen_token}};
-        
-//                             Admin.updateOne({
-//                                 _id: admin._id
-//                             }, newValues)
-//                             .then(admin => {
-//                                 if(admin) {
-//                                     console.log("Updated token")
-//                                 }
-//                                 else {
-//                                     console.log({error:"Token not updated"})
-//                                 }
-//                             })
-//                             .catch(err => {
-//                                 console.log('error:' + err.message)
-//                             });
-                        
-//                             res.json({status: "Registered and a link is sent to your to get email verified"});
-//                         })
-//                         .catch(err => {
-//                             var arr= Object.keys(err['errors'])
-//                             var errors= []
-//                             for(i in arr){
-//                             errors.push(err['errors'][arr[i]].message);
-//                             }
-//                             console.log(errors)
-//                             res.json({error: errors})
-//                         })
-//                     })
+// router.post('/addsuperuser', addSuperUser);
 
-//                 }
-//                 else{
-//                     res.json({error: "admin already exist"})
-//                 }
-//             }).catch(err => {
-//                 var arr= Object.keys(err['errors'])
-//                 var errors= []
-//                 for(i in arr){
-//                 errors.push(err['errors'][arr[i]].message);
-//                 }
-//                 console.log(errors)
-//                 res.json({error: errors})
-//             })   
+// function addSuperUser(req, res) {
+//   const admin_data = {
+//     name: req.body.username,
+//     hashedPassword: req.body.hashedPassword,
+//     email: req.body.email,
+//     isAdmin: true
+//   }
+//   bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
+//     admin_data.hashedPassword = hash;
+//     Admin.create(admin_data)
+//       .then(user => {
+
+//         const gen_token = randomToken(55);
+
+//         // email.send_verification_token(gen_token, user.email);
+
+//         var newValues = {
+//           $set: {
+//             token: gen_token
+//           }
+//         };
+
+//         Admin.updateOne({
+//           _id: user._id
+//         }, newValues)
+//           .then(user => {
+//             if (user) {
+//               console.log("updated token")
+//             } else {
+//               console.log({
+//                 error: "token not updated"
+//               })
+//             }
+//           })
+//           .catch(err => {
+//             console.log('error:' + err.message)
+//           });
+
+//         res.json({
+//           status: "registered"
+//         });
+//       })
+
+//       .catch(err => {
+//         var arr = Object.keys(err['errors'])
+//         var errors = []
+//         for (i in arr) {
+//           errors.push(err['errors'][arr[i]].message);
 //         }
-//         else {
-//             res.json({error: 'Admin not a super user'})
-//         }
-//     })
-// }
+//         console.log(errors)
+//         res.json({
+//           error: errors
+//         });
+//       })
 
-function register_admin(req, res){
-    const admin_data={
-        name:req.body.username,
-        hashedPassword: req.body.hashedPassword,
-        email: req.body.email,
-    }
+//     console.log(admin_data)
+//   }
 
-    Admin.findOne({
-        name: req.body.superAdmin,
-        isAdmin: true
-    })
+function register_admin(req, res) {
+  const admin_data = {
+    name: req.body.username,
+    hashedPassword: req.body.hashedPassword,
+    email: req.body.email
+  }
+
+  Admin.findOne({
+    name: req.body.superAdmin,
+    isAdmin: true
+  })
     .then(super_admin => {
-        if(super_admin){
-            Admin.findOne({
-                email: req.body.email
-            })
-            .then(admin => {
-                if(!admin){
-                    bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
-                    admin_data.hashedPassword = hash;
-                    Admin.create(admin_data)
-                    .then(user => {
+      if (super_admin) {
+        Admin.findOne({
+          email: req.body.email
+        })
+          .then(admin => {
+            if (!admin) {
+              bcrypt.hash(req.body.hashedPassword, 10, (err, hash) => {
+                admin_data.hashedPassword = hash;
+                Admin.create(admin_data)
+                  .then(user => {
 
-                        const gen_token= randomToken(55);
-    
-                        email.send_verification_token(gen_token, user.email);
-    
-                        var newValues = { $set: {token: gen_token } };
-                  
-                          Admin.updateOne({
-                            _id: user._id
-                          }, newValues)
-                            .then(user => {
-                              if(user){
-                                console.log("updated token")
-                              }
-                              else{
-                                console.log({error:"token not updated"})
-                              }
-                            })
-                            .catch(err => {
-                              console.log('error:' + err.message)
-                            });
-    
-                        res.json({status: "registered and a link is sent to your to get your email verified"});
-                      })
-    
-                      .catch(err => {
-                        var arr= Object.keys(err['errors'])
-                        var errors= []
-                        for(i in arr){
-                          errors.push(err['errors'][arr[i]].message);
+                    const gen_token = randomToken(55);
+
+                    // email.send_verification_token(gen_token, user.email);
+
+                    var newValues = {
+                      $set: {
+                        token: gen_token
+                      }
+                    };
+
+                    Admin.updateOne({
+                      _id: user._id
+                    }, newValues)
+                      .then(user => {
+                        if (user) {
+                          console.log("updated token")
+                        } else {
+                          console.log({
+                            error: "token not updated"
+                          })
                         }
-                        console.log(errors)
-                        res.json({error: errors});
                       })
+                      .catch(err => {
+                        console.log('error:' + err.message)
+                      });
 
-                    console.log(admin_data)
-                    })    
-                }
-                else{
-                    console.log('admin exist')
-                }    
+                    res.json({
+                      status: "registered"
+                    });
+                  })
+
+                  .catch(err => {
+                    var arr = Object.keys(err['errors'])
+                    var errors = []
+                    for (i in arr) {
+                      errors.push(err['errors'][arr[i]].message);
+                    }
+                    console.log(errors)
+                    res.json({
+                      error: errors
+                    });
+                  })
+
+                console.log(admin_data)
+              })
+            } else {
+              console.log('admin exist')
+            }
+          })
+          .catch(err => {
+            console.log({
+              error: err
             })
-            .catch(err => {
-                console.log({error: err })
-            })
-        }
-        else{
-            console.log({error: "super admin not found"})
-        }
+          })
+      } else {
+        console.log({
+          error: "super admin not found"
+        })
+      }
     })
-    .catch(err=>{
-        console.log({error: err})
+    .catch(err => {
+      console.log({
+        error: err
+      })
     })
 }
 
 router.post('/login', login)
 
 function login(req, res) {
-    Admin.findOne({
-        email: req.body.email
-    })
+  Admin.findOne({
+    email: req.body.email
+  })
     .then(admin => {
-        if (admin) {
-          if (bcrypt.compareSync(req.body.hashedPassword, admin.hashedPassword)) {
-            // Passwords match
-            const payload = {
-              _id: admin._id,
-              email: admin.email
-            }
-            let token = jwt.sign(payload, process.SECRET_KEY, {
-              algorithm: 'HS256',
-              expiresIn: 1440
-            })
-            res.send(token)
-          } else {
-            // Passwords don't match
-            res.json({ error: 'Incorrect Password' })
+      if (admin) {
+        if (bcrypt.compareSync(req.body.hashedPassword, admin.hashedPassword)) {
+          // Passwords match
+          const payload = {
+            _id: admin._id,
+            email: admin.email
           }
+          let token = jwt.sign(payload, process.SECRET_KEY, {
+            algorithm: 'HS256',
+            expiresIn: 1440
+          })
+          res.send(token)
         } else {
-          res.json({ error: 'Admin does not exist' })
+          // Passwords don't match
+          res.json({
+            error: 'Incorrect Password'
+          })
+          console.log("Failed, password is ",req.body.hashedPassword)
         }
-      })
-      .catch(err => {
-        res.send('error: ' + err)
-      });
-}
+      } else {
+        res.json({
+          error: 'Admin does not exist'
+        })
+      }
+    })
+    .catch(err => {
+      res.send('error: ' + err)
+    });
 
+}
 
 router.post('/addstation', auth, addStation)
 
@@ -218,10 +225,10 @@ function addStation(req, res) {
     name: req.body.name,
     fuelDetails: req.body.fuelDetails,
     address: req.body.address,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude,
     pumps: []
   }
-
-
   // res.send('done')
 
   // res.body.fuelDetails is array of objects
@@ -236,7 +243,7 @@ function addStation(req, res) {
         })
           .then(petrol => {
             if (!petrol) {
-              tempid = 0
+              tempid = 1
               let fueltype = ["Petrol", "Diesel", "CNG"];
               let pumpcount = [req.body.petrolpumps, req.body.dieselpumps, req.body.cngpumps];
               for (i = 0; i < pumpcount.length; i++) {
@@ -250,7 +257,14 @@ function addStation(req, res) {
               }
               console.log(petrolstationdata)
               PetrolStation.create(petrolstationdata)
-              res.send('Petrol Station added')
+              .then(added=>{
+                console.log(added);
+                res.send('Petrol Station added')
+              })
+              .catch(err => {
+                console.log(err);
+                res.send('Petrol Station failed to add')
+              });
             } else {
               res.json({
                 error: "Petrol Station already exists"
@@ -279,8 +293,9 @@ function getpetrolpump(req, res) {
   })
     .then(petrol => {
       console.log(petrol)
-      res.send('valid')
+      res.send(petrol)
     })
 }
+
 
 module.exports = router;

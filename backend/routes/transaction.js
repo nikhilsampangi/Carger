@@ -1,6 +1,10 @@
 const express = require('express');
 const paypal = require('paypal-rest-sdk');
 const User= require('../models/user.model');
+const googleMapsClient = require('@google/maps').createClient({
+    key: 'AIzaSyA7nx22ZmINYk9TGiXDEXGVxghC43Ox6qA',
+    Promise: Promise
+  });
 
 
 function pay(details, callback) {
@@ -10,8 +14,8 @@ function pay(details, callback) {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:8008/user/success",
-            "cancel_url": "http://localhost:8008/user/cancel"
+            "return_url": "http://192.168.43.177:8008/user/success",
+            "cancel_url": "http://192.168.43.177:8008/user/cancel"
         },
         "transactions": [{
             "item_list": {
@@ -119,8 +123,6 @@ function update_balance(data){
             else{
                 console.log("error")
             }
-
-
             
         }
     })
@@ -128,5 +130,43 @@ function update_balance(data){
 }
 
 
+// function g(loc){
+//     lis = []
+//     User.find({})
+//    .then(u => {
+//         for(let i = 0; i < u.length; i++){
+//             console.log('length of users list:-', u.length)
+//             // d = u[i].latitude + ',' + u[i].longitude
+//             googleMapsClient.directions({
+//                 origin: loc.lat + ',' + loc.lng,
+//                 destination: '33.8068768,-118.3527671',
+//                 units: 'metric'
+//             })
+//             .asPromise()
+//             .then(response =>{
+//                 d = response.json.routes[0].legs[0].distance.text
+//                     x = d.split(" ")
+//                     if(parseFloat(x[0]) < 100){
+//                         lis.push(i)
+//                         console.log(lis)
+//                     }
+//                     console.log(response.json);
+//             })
+//             .catch(err =>{
+//                 return err
+//             })
+//             setTimeout(doSomething, 3000)
+//         }
+//    })
+//    .catch(err =>{
+//        return err
+//    })
+
+//    console.log('after interval')
+//    function doSomething(){
+//     console.log('time', lis)
+//     return lis
+// }
+// }
 
 module.exports= {pay, success, update_balance}
